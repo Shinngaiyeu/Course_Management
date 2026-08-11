@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { UserTable } from './UserTable';
 import { UserEditModal } from './UserEditModal';
+import { UserCreateModal } from './UserCreateModal';
 import { userService, User, PagedResult } from '@/services/userService';
 import { departmentService, Department } from '@/services/departmentService';
 import { Users as UsersIcon, Search, Filter, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/common/Button';
+import toast from 'react-hot-toast';
 
 export const UserManagementPage: React.FC = () => {
   const [pagedData, setPagedData] = useState<PagedResult<User>>({
@@ -26,6 +28,7 @@ export const UserManagementPage: React.FC = () => {
   
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [lockUser, setLockUser] = useState<User | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -79,20 +82,36 @@ export const UserManagementPage: React.FC = () => {
     try {
       const updatedStatus = lockUser.status === 'Active' ? 'Locked' : 'Active';
       await userService.updateUser({ ...lockUser, status: updatedStatus });
+      toast.success(`Account successfully ${updatedStatus.toLowerCase()}`);
       fetchUsers(); // Refresh current page
       setLockUser(null);
     } catch (error) {
       console.error('Failed to update user status', error);
+      toast.error('Failed to update user status');
     }
   };
 
   const handleSave = async (updatedUser: User) => {
     try {
       await userService.updateUser(updatedUser);
+      toast.success('User updated successfully');
       fetchUsers(); // Refresh current page
       setEditingUser(null);
     } catch (error) {
       console.error('Failed to update user', error);
+      toast.error('Failed to update user');
+    }
+  };
+
+  const handleCreate = async (payload: any) => {
+    try {
+      await userService.createUser(payload);
+      toast.success('User created successfully');
+      fetchUsers(); // Refresh current page
+      setIsCreateOpen(false);
+    } catch (error) {
+      console.error('Failed to create user', error);
+      toast.error('Failed to create user');
     }
   };
 
@@ -108,6 +127,9 @@ export const UserManagementPage: React.FC = () => {
             Manage your users, their roles, and account status from HRIS sync.
           </p>
         </div>
+        <Button onClick={() => setIsCreateOpen(true)} className="flex items-center">
+          Add User
+        </Button>
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
@@ -187,6 +209,15 @@ export const UserManagementPage: React.FC = () => {
           </>
         )}
       </div>
+
+      {isCreateOpen && (
+        <UserCreateModal
+          isOpen={true}
+          onClose={() => setIsCreateOpen(false)}
+          onSave={handleCreate}
+          departments={departments}
+        />
+      )}
 
       {editingUser && (
         <UserEditModal

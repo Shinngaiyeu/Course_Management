@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Department, departmentService } from '../../services/departmentService';
 import { Edit2, Plus } from 'lucide-react';
+import { DepartmentEditModal } from './DepartmentEditModal';
+import toast from 'react-hot-toast';
 
 const DepartmentManagementPage: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingDept, setEditingDept] = useState<Department | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchDepartments();
@@ -21,11 +25,41 @@ const DepartmentManagementPage: React.FC = () => {
     }
   };
 
+  const handleSave = async (payload: Omit<Department, 'id'>) => {
+    try {
+      if (editingDept) {
+        await departmentService.updateDepartment(editingDept.id, payload);
+        toast.success('Department updated successfully');
+      } else {
+        await departmentService.createDepartment(payload);
+        toast.success('Department created successfully');
+      }
+      fetchDepartments();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Failed to save department', error);
+      toast.error('Failed to save department');
+    }
+  };
+
+  const openCreateModal = () => {
+    setEditingDept(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (dept: Department) => {
+    setEditingDept(dept);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Departments</h2>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center">
+        <button 
+          onClick={openCreateModal}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add Department
         </button>
@@ -51,7 +85,11 @@ const DepartmentManagementPage: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{dept.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">{dept.description || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900 flex items-center justify-end w-full" title="Edit">
+                    <button 
+                      onClick={() => openEditModal(dept)}
+                      className="text-blue-600 hover:text-blue-900 flex items-center justify-end w-full" 
+                      title="Edit"
+                    >
                       <Edit2 className="h-4 w-4" />
                     </button>
                   </td>
@@ -66,6 +104,13 @@ const DepartmentManagementPage: React.FC = () => {
           </table>
         </div>
       )}
+
+      <DepartmentEditModal
+        department={editingDept}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSave}
+      />
     </div>
   );
 };

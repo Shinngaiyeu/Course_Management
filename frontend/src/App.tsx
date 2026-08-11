@@ -5,6 +5,7 @@ import LoginPage from './pages/Auth/LoginPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import DepartmentManagementPage from './pages/Departments/DepartmentManagementPage';
 import SyncLogPage from './pages/SyncLogs/SyncLogPage';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <Toaster position="top-right" />
     </BrowserRouter>
   );
 }

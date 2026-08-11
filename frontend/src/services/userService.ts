@@ -63,5 +63,16 @@ export const userService = {
     };
     await api.patch(`/users/${user.id}`, payload);
     return user;
+  },
+  createUser: async (payload: any): Promise<User> => {
+    const data = (await api.post<any>('/users', payload)).data;
+    return {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      department: data.department?.name,
+      roles: data.roles?.map((r: any) => r.name) || [],
+      status: data.isActive ? 'Active' : 'Locked'
+    };
   }
 };
