@@ -1,0 +1,9 @@
+[Bb]in/
+[Oo]bj/
+*.user
+*.userprefs
+*.suo
+*.sqlite
+.idea/
+.vscode/
+*.log
