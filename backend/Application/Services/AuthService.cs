@@ -19,9 +19,9 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
-    public async Task<string?> AuthenticateAsync(string username, string password)
+    public async Task<string?> AuthenticateAsync(string email, string password)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
+        var user = await _userRepository.GetByEmailAsync(email);
         
         // Mock password check for assessment purposes
         if (user == null || user.PasswordHash != password) 

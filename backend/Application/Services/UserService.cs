@@ -21,10 +21,21 @@ public class UserService : IUserService
         _departmentRepository = departmentRepository;
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+    public async Task<PagedResult<UserDto>> GetPagedUsersAsync(UserQueryParameters query)
     {
-        var users = await _repository.GetAllAsync();
-        return users.Select(MapToDto);
+        var (items, totalCount) = await _repository.GetPagedAsync(
+            query.PageNumber, 
+            query.PageSize, 
+            query.DepartmentId, 
+            query.SearchTerm);
+
+        return new PagedResult<UserDto>
+        {
+            Items = items.Select(MapToDto).ToList(),
+            TotalCount = totalCount,
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize
+        };
     }
 
     public async Task<UserDto?> GetUserByIdAsync(Guid id)
@@ -45,6 +56,14 @@ public class UserService : IUserService
             DepartmentId = dto.DepartmentId,
             IsActive = true
         };
+
+        if (dto.RoleIds != null && dto.RoleIds.Any())
+        {
+            foreach (var roleId in dto.RoleIds)
+            {
+                user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = roleId });
+            }
+        }
 
         await _repository.AddAsync(user);
 

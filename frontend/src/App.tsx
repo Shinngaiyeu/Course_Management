@@ -1,21 +1,29 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { DashboardLayout } from '@/layouts/DashboardLayout';
-import { UserManagementPage } from '@/pages/Users/UserManagementPage';
-import './App.css';
+import { DashboardLayout } from './layouts/DashboardLayout';
+import { UserManagementPage } from './pages/Users/UserManagementPage';
+import LoginPage from './pages/Auth/LoginPage';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import DepartmentManagementPage from './pages/Departments/DepartmentManagementPage';
+import SyncLogPage from './pages/SyncLogs/SyncLogPage';
 
-const App: React.FC = () => {
+function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="/users" replace />} />
-          <Route path="users" element={<UserManagementPage />} />
-          <Route path="settings" element={<div className="p-4">Settings Placeholder</div>} />
+        <Route path="/login" element={<LoginPage />} />
+        
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route index element={<Navigate to="/users" replace />} />
+            <Route path="users" element={<UserManagementPage />} />
+            <Route path="departments" element={<DepartmentManagementPage />} />
+            <Route path="sync-logs" element={<SyncLogPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default App;

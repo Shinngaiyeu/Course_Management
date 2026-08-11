@@ -18,10 +18,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] UserQueryParameters query)
     {
-        var users = await _service.GetAllUsersAsync();
-        return Ok(users);
+        var pagedUsers = await _service.GetPagedUsersAsync(query);
+        return Ok(pagedUsers);
     }
 
     [HttpGet("{id}")]

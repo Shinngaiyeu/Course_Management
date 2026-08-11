@@ -39,5 +39,15 @@ public class AppDbContext : DbContext
             new Role { Id = 2, Name = "Manager" },
             new Role { Id = 3, Name = "Learner" }
         );
+
+
+
+        // Seed Sample Departments
+        modelBuilder.Entity<Department>().HasData(
+            new Department { Id = 1, Name = "IT Department", Description = "Information Technology and Infrastructure" },
+            new Department { Id = 2, Name = "HR Department", Description = "Human Resources and Employee Relations" },
+            new Department { Id = 3, Name = "Finance Department", Description = "Accounting and Financial Planning" },
+            new Department { Id = 4, Name = "Sales Department", Description = "Sales and Customer Acquisition" }
+        );
     }
 }

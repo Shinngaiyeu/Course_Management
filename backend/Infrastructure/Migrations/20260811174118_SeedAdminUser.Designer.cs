@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260811174118_SeedAdminUser")]
+    partial class SeedAdminUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +33,6 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -40,32 +40,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Information Technology and Infrastructure",
-                            Name = "IT Department"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Human Resources and Employee Relations",
-                            Name = "HR Department"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Accounting and Financial Planning",
-                            Name = "Finance Department"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Sales and Customer Acquisition",
-                            Name = "Sales Department"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
@@ -165,6 +139,18 @@ namespace Infrastructure.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2026, 8, 11, 17, 41, 18, 549, DateTimeKind.Utc).AddTicks(1090),
+                            Email = "admin@lms.local",
+                            IsActive = true,
+                            PasswordHash = "password123",
+                            UpdatedAt = new DateTime(2026, 8, 11, 17, 41, 18, 549, DateTimeKind.Utc).AddTicks(1090),
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.UserRole", b =>
@@ -180,6 +166,13 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>

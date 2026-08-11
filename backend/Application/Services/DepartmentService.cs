@@ -17,21 +17,21 @@ public class DepartmentService : IDepartmentService
     public async Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync()
     {
         var deps = await _repository.GetAllAsync();
-        return deps.Select(d => new DepartmentDto { Id = d.Id, Name = d.Name });
+        return deps.Select(d => new DepartmentDto { Id = d.Id, Name = d.Name, Description = d.Description });
     }
 
     public async Task<DepartmentDto?> GetDepartmentByIdAsync(int id)
     {
         var d = await _repository.GetByIdAsync(id);
         if (d == null) return null;
-        return new DepartmentDto { Id = d.Id, Name = d.Name };
+        return new DepartmentDto { Id = d.Id, Name = d.Name, Description = d.Description };
     }
 
     public async Task<DepartmentDto> CreateDepartmentAsync(CreateDepartmentDto dto)
     {
-        var dep = new Department { Name = dto.Name };
+        var dep = new Department { Name = dto.Name, Description = dto.Description };
         await _repository.AddAsync(dep);
-        return new DepartmentDto { Id = dep.Id, Name = dep.Name };
+        return new DepartmentDto { Id = dep.Id, Name = dep.Name, Description = dep.Description };
     }
 
     public async Task<DepartmentDto?> UpdateDepartmentAsync(int id, UpdateDepartmentDto dto)
@@ -40,9 +40,11 @@ public class DepartmentService : IDepartmentService
         if (dep == null) return null;
 
         dep.Name = dto.Name;
+        if (dto.Description != null) dep.Description = dto.Description;
+        
         await _repository.UpdateAsync(dep);
 
-        return new DepartmentDto { Id = dep.Id, Name = dep.Name };
+        return new DepartmentDto { Id = dep.Id, Name = dep.Name, Description = dep.Description };
     }
 
     public async Task<bool> DeleteDepartmentAsync(int id)

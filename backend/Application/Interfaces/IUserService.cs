@@ -4,7 +4,7 @@ namespace Application.Interfaces;
 
 public interface IUserService
 {
-    Task<IEnumerable<UserDto>> GetAllUsersAsync();
+    Task<PagedResult<UserDto>> GetPagedUsersAsync(UserQueryParameters query);
     Task<UserDto?> GetUserByIdAsync(Guid id);
     Task<UserDto> CreateUserAsync(CreateUserDto dto);
     Task<UserDto?> UpdateUserAsync(Guid id, UpdateUserDto dto);

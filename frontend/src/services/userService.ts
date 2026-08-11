@@ -10,30 +10,58 @@ export interface UserRole {
   role: Role;
 }
 
+import api from './api';
+
 export interface User {
   id: string;
   username: string;
   email: string;
-  departmentId: number | null;
-  isActive: boolean;
-  userRoles: UserRole[];
+  department?: string;
+  roles: string[];
+  status: 'Active' | 'Locked';
 }
 
-// Dummy data to ensure UI works even if backend endpoint is missing for users list
-const dummyUsers: User[] = [
-  { id: '1', username: 'admin_super', email: 'admin@hris.local', departmentId: 1, isActive: true, userRoles: [{ roleId: 1, role: { id: 1, name: 'Admin' } }] },
-  { id: '2', username: 'john_manager', email: 'john@hris.local', departmentId: 2, isActive: true, userRoles: [{ roleId: 2, role: { id: 2, name: 'Manager' } }] },
-  { id: '3', username: 'jane_learner', email: 'jane@hris.local', departmentId: 3, isActive: true, userRoles: [{ roleId: 3, role: { id: 3, name: 'Learner' } }] },
-  { id: '4', username: 'bob_locked', email: 'bob@hris.local', departmentId: 2, isActive: false, userRoles: [{ roleId: 3, role: { id: 3, name: 'Learner' } }] },
-];
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
 
 export const userService = {
-  getUsers: async (): Promise<User[]> => {
-    // In a real app: return (await api.get<User[]>('/users')).data;
-    return new Promise((resolve) => setTimeout(() => resolve([...dummyUsers]), 500));
+  getUsers: async (page = 1, pageSize = 10, departmentId?: number, search?: string): Promise<PagedResult<User>> => {
+    const params = new URLSearchParams({
+      pageNumber: page.toString(),
+      pageSize: pageSize.toString()
+    });
+    
+    if (departmentId) params.append('departmentId', departmentId.toString());
+    if (search) params.append('searchTerm', search);
+
+    const data = (await api.get<any>(`/users?${params.toString()}`)).data;
+    
+    return {
+      ...data,
+      items: data.items.map((u: any) => ({
+        id: u.id,
+        username: u.username,
+        email: u.email,
+        department: u.department?.name,
+        roles: u.roles?.map((r: any) => r.name) || [],
+        status: u.isActive ? 'Active' : 'Locked'
+      }))
+    };
   },
   updateUser: async (user: User): Promise<User> => {
-    // In a real app: return (await api.put<User>(`/users/${user.id}`, user)).data;
-    return new Promise((resolve) => setTimeout(() => resolve(user), 500));
+    // We map frontend User back to what backend expects for update
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      isActive: user.status === 'Active'
+    };
+    await api.patch(`/users/${user.id}`, payload);
+    return user;
   }
 };

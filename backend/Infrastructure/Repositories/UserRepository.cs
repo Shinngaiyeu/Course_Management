@@ -33,13 +33,43 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Username == username);
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<User?> GetByEmailAsync(string email)
     {
         return await _context.Users
             .Include(u => u.Department)
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public async Task<(IEnumerable<User> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, int? departmentId, string? searchTerm)
+    {
+        var query = _context.Users
+            .Include(u => u.Department)
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .AsQueryable();
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(u => u.DepartmentId == departmentId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(u => u.Username.ToLower().Contains(term) || u.Email.ToLower().Contains(term));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(u => u.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return (items, totalCount);
     }
 
     public async Task AddAsync(User user)

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://localhost:7165/api', // Default HTTPS port for .NET 8 webapi
+  baseURL: 'http://localhost:5206/api', // Connects to the real backend
 });
 
 api.interceptors.request.use((config) => {
