@@ -7,3 +7,5 @@
 .idea/
 .vscode/
 *.log
+secrets.json
+appsettings.Local.json

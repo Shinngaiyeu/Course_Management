@@ -1,0 +1,13 @@
+namespace Domain.Entities;
+
+public class Lesson
+{
+    public int Id { get; set; }
+    public int CourseModuleId { get; set; }
+    public CourseModule? CourseModule { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Content { get; set; }
+    public string? VideoUrl { get; set; }
+    public string? Metadata { get; set; } // JSON string for PDF/Quiz/Video metadata
+    public int OrderIndex { get; set; }
+}

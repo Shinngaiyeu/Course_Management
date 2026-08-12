@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { User, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -19,16 +20,28 @@ const LoginPage = () => {
     try {
       const token = await authService.login(email, password);
       localStorage.setItem('token', token);
-      navigate('/');
+      
+      const roles = authService.getRoles();
+      toast.success('Login successful!');
+      
+      if (roles.includes('Learner') && !roles.includes('Admin') && !roles.includes('Manager')) {
+        navigate('/learner');
+      } else if (roles.includes('Manager')) {
+        navigate('/courses');
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
-      setError('Invalid email or password. Please try again.');
+      const errorMsg = 'Invalid email or password. Please try again.';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 relative overflow-hidden">
       
       {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -40,33 +53,28 @@ const LoginPage = () => {
         
         {/* Brand Logo/Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-400 shadow-xl shadow-blue-500/30 mb-6">
-            <span className="text-3xl font-bold text-white">LMS</span>
-          </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
-            Welcome Back
+          
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Login
           </h2>
-          <p className="mt-3 text-blue-200">
-            Sign in to access your administrative dashboard
-          </p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl shadow-2xl">
+        <div className="bg-white border border-gray-200 p-8 rounded-3xl shadow-xl">
           <form className="space-y-6" onSubmit={handleLogin}>
             
             {/* Email Input */}
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-blue-300 group-focus-within:text-blue-400 transition-colors" />
+                  <User className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <input
                   name="email"
                   type="email"
                   required
-                  className="block w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-blue-300/50 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all focus:bg-white/10"
+                  className="block w-full pl-11 pr-4 py-3.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -76,16 +84,16 @@ const LoginPage = () => {
 
             {/* Password Input */}
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-2">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-blue-300 group-focus-within:text-blue-400 transition-colors" />
+                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <input
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
-                  className="block w-full pl-11 pr-12 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-blue-300/50 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all focus:bg-white/10"
+                  className="block w-full pl-11 pr-12 py-3.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -94,7 +102,7 @@ const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-blue-300 hover:text-white transition-colors focus:outline-none"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -107,7 +115,7 @@ const LoginPage = () => {
 
             {/* Error Message */}
             {error && (
-              <div className="animate-fade-in bg-red-500/10 border border-red-500/50 text-red-200 text-sm p-3 rounded-lg flex items-center">
+              <div className="animate-fade-in bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg flex items-center">
                 <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
                 {error}
               </div>

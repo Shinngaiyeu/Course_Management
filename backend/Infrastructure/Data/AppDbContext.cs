@@ -14,6 +14,9 @@ public class AppDbContext : DbContext
     public DbSet<Department> Departments { get; set; } = null!;
     public DbSet<UserRole> UserRoles { get; set; } = null!;
     public DbSet<SyncLog> SyncLogs { get; set; } = null!;
+    public DbSet<Course> Courses { get; set; } = null!;
+    public DbSet<CourseModule> CourseModules { get; set; } = null!;
+    public DbSet<Lesson> Lessons { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,5 +52,24 @@ public class AppDbContext : DbContext
             new Department { Id = 3, Name = "Finance Department", Description = "Accounting and Financial Planning" },
             new Department { Id = 4, Name = "Sales Department", Description = "Sales and Customer Acquisition" }
         );
+
+        // Course configurations
+        modelBuilder.Entity<Course>()
+            .HasOne(c => c.Instructor)
+            .WithMany()
+            .HasForeignKey(c => c.InstructorId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<CourseModule>()
+            .HasOne(cm => cm.Course)
+            .WithMany(c => c.Modules)
+            .HasForeignKey(cm => cm.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Lesson>()
+            .HasOne(l => l.CourseModule)
+            .WithMany(cm => cm.Lessons)
+            .HasForeignKey(l => l.CourseModuleId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

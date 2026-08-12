@@ -5,6 +5,11 @@ import LoginPage from './pages/Auth/LoginPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import DepartmentManagementPage from './pages/Departments/DepartmentManagementPage';
 import SyncLogPage from './pages/SyncLogs/SyncLogPage';
+import CourseManagementPage from './pages/Courses/CourseManagementPage';
+import CourseDetailsPage from './pages/Courses/CourseDetailsPage';
+import { LearnerLayout } from './layouts/LearnerLayout';
+import LearnerHomePage from './pages/Learner/LearnerHomePage';
+import LearnerCourseDetailsPage from './pages/Learner/LearnerCourseDetailsPage';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -19,7 +24,15 @@ function App() {
             <Route index element={<Navigate to="/users" replace />} />
             <Route path="users" element={<UserManagementPage />} />
             <Route path="departments" element={<DepartmentManagementPage />} />
+            <Route path="courses" element={<CourseManagementPage />} />
+            <Route path="courses/:id" element={<CourseDetailsPage />} />
             <Route path="sync-logs" element={<SyncLogPage />} />
+          </Route>
+          
+          {/* Learner Routes */}
+          <Route path="/learner" element={<LearnerLayout />}>
+            <Route index element={<LearnerHomePage />} />
+            <Route path="course/:id" element={<LearnerCourseDetailsPage />} />
           </Route>
         </Route>
       </Routes>

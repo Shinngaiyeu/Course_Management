@@ -16,6 +16,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  departmentId?: number;
   department?: string;
   roles: string[];
   status: 'Active' | 'Locked';
@@ -47,6 +48,7 @@ export const userService = {
         id: u.id,
         username: u.username,
         email: u.email,
+        departmentId: u.departmentId,
         department: u.department?.name,
         roles: u.roles?.map((r: any) => r.name) || [],
         status: u.isActive ? 'Active' : 'Locked'
@@ -59,6 +61,7 @@ export const userService = {
       id: user.id,
       username: user.username,
       email: user.email,
+      departmentId: user.departmentId,
       isActive: user.status === 'Active'
     };
     await api.patch(`/users/${user.id}`, payload);
@@ -70,6 +73,7 @@ export const userService = {
       id: data.id,
       username: data.username,
       email: data.email,
+      departmentId: data.departmentId,
       department: data.department?.name,
       roles: data.roles?.map((r: any) => r.name) || [],
       status: data.isActive ? 'Active' : 'Locked'

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { User } from '@/services/userService';
+import { Department } from '@/services/departmentService';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/common/Button';
 
 interface UserEditModalProps {
   user: User;
+  departments: Department[];
   isOpen: boolean;
   onClose: () => void;
   onSave: (user: User) => void;
@@ -12,8 +14,9 @@ interface UserEditModalProps {
 
 const availableRoles = ['Admin', 'Manager', 'Learner'];
 
-export const UserEditModal: React.FC<UserEditModalProps> = ({ user, isOpen, onClose, onSave }) => {
+export const UserEditModal: React.FC<UserEditModalProps> = ({ user, departments, isOpen, onClose, onSave }) => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>(user.roles || []);
+  const [departmentId, setDepartmentId] = useState<number | undefined>(user.departmentId);
 
   const toggleRole = (role: string) => {
     setSelectedRoles(prev => 
@@ -24,13 +27,28 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, isOpen, onCl
   const handleSave = () => {
     onSave({
       ...user,
-      roles: selectedRoles
+      roles: selectedRoles,
+      departmentId
     });
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Edit User: ${user.username}`}>
       <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+          <select
+            className="block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+            value={departmentId || ''}
+            onChange={(e) => setDepartmentId(e.target.value ? Number(e.target.value) : undefined)}
+          >
+            <option value="">No Department</option>
+            {departments.map(d => (
+              <option key={d.id} value={d.id}>{d.name}</option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <h4 className="text-sm font-medium text-gray-900 mb-3">Roles</h4>
           <div className="space-y-3">

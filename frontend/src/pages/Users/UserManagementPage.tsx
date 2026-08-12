@@ -222,6 +222,7 @@ export const UserManagementPage: React.FC = () => {
       {editingUser && (
         <UserEditModal
           user={editingUser}
+          departments={departments}
           isOpen={true}
           onClose={() => setEditingUser(null)}
           onSave={handleSave}
