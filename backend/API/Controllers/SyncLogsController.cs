@@ -17,10 +17,20 @@ public class SyncLogsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] string? status = null)
     {
-        var logs = await _service.GetAllLogsAsync();
-        return Ok(logs);
+        var result = await _service.GetPagedLogsAsync(pageNumber, pageSize, status);
+        return Ok(result);
+    }
+
+    [HttpPost("{id}/retry")]
+    public async Task<IActionResult> Retry(int id)
+    {
+        var success = await _service.RetrySyncLogAsync(id);
+        if (success)
+            return Ok(new { success = true });
+        else
+            return BadRequest(new { success = false, message = "Retry failed" });
     }
 
     [HttpGet("{id}")]
