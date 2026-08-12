@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Edit2, Plus, Trash2, Video, FileText, Loader2, CheckCircle } from 'lucide-react';
 import { Course, CourseModule, Lesson, courseService } from '@/services/courseService';
+import { authService } from '@/services/authService';
 import { ModuleEditModal } from './ModuleEditModal';
 import { LessonEditModal } from './LessonEditModal';
 import toast from 'react-hot-toast';
@@ -29,6 +30,8 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
   const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
+
+  const isManager = authService.getRoles().includes('Manager');
 
   const toggleExpand = async () => {
     if (!isExpanded && !detailedCourse) {
@@ -181,20 +184,22 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={handleAddModule}
-            className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg flex items-center transition-colors"
-          >
-            <Plus className="h-4 w-4 mr-1" /> Module
-          </button>
-          <button 
-            onClick={(e) => onEditCourse(e, course)}
-            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-          >
-            <Edit2 className="h-4 w-4" />
-          </button>
-        </div>
+        {isManager && (
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={handleAddModule}
+              className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg flex items-center transition-colors"
+            >
+              <Plus className="h-4 w-4 mr-1" /> Module
+            </button>
+            <button 
+              onClick={(e) => onEditCourse(e, course)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              <Edit2 className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {isExpanded && (
@@ -223,24 +228,28 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                         </h4>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button 
-                          onClick={(e) => handleAddLesson(e, mod.id)}
-                          className="text-xs font-medium text-blue-600 hover:text-blue-800 px-2 py-1 flex items-center"
-                        >
-                          <Plus className="h-3 w-3 mr-1" /> Lesson
-                        </button>
-                        <button 
-                          onClick={(e) => handleEditModule(e, mod)}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                        >
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button 
-                          onClick={(e) => handleDeleteModule(e, mod.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        {isManager && (
+                          <>
+                            <button 
+                              onClick={(e) => handleAddLesson(e, mod.id)}
+                              className="text-xs font-medium text-blue-600 hover:text-blue-800 px-2 py-1 flex items-center"
+                            >
+                              <Plus className="h-3 w-3 mr-1" /> Lesson
+                            </button>
+                            <button 
+                              onClick={(e) => handleEditModule(e, mod)}
+                              className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            >
+                              <Edit2 className="h-3.5 w-3.5" />
+                            </button>
+                            <button 
+                              onClick={(e) => handleDeleteModule(e, mod.id)}
+                              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -340,20 +349,22 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                     })()}
                                   </div>
                                 </div>
-                                <div className="hidden group-hover:flex items-center gap-1">
-                                  <button 
-                                    onClick={(e) => handleEditLesson(e, lesson, mod.id)}
-                                    className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md transition-colors"
-                                  >
-                                    <Edit2 className="h-3.5 w-3.5" />
-                                  </button>
-                                  <button 
-                                    onClick={(e) => handleDeleteLesson(e, lesson.id)}
-                                    className="p-1.5 text-gray-400 hover:text-red-600 rounded-md transition-colors"
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </button>
-                                </div>
+                                {isManager && (
+                                  <div className="hidden group-hover:flex items-center gap-1">
+                                    <button 
+                                      onClick={(e) => handleEditLesson(e, lesson, mod.id)}
+                                      className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md transition-colors"
+                                    >
+                                      <Edit2 className="h-3.5 w-3.5" />
+                                    </button>
+                                    <button 
+                                      onClick={(e) => handleDeleteLesson(e, lesson.id)}
+                                      className="p-1.5 text-gray-400 hover:text-red-600 rounded-md transition-colors"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                )}
                               </li>
                             ))}
                           </ul>

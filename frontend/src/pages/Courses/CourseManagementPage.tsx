@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Plus, Search, Edit2 } from 'lucide-react';
 import { courseService, Course, PagedResult } from '@/services/courseService';
+import { authService } from '@/services/authService';
 import { CourseEditModal } from './CourseEditModal';
 import { CourseAccordionItem } from './CourseAccordionItem';
 import toast from 'react-hot-toast';
@@ -22,6 +23,8 @@ export const CourseManagementPage: React.FC = () => {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+
+  const isManager = authService.getRoles().includes('Manager');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -88,13 +91,15 @@ export const CourseManagementPage: React.FC = () => {
             Create and manage courses, modules, and lessons.
           </p>
         </div>
-        <button 
-          onClick={openCreateModal}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center shadow-sm font-medium"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Create Course
-        </button>
+        {isManager && (
+          <button 
+            onClick={openCreateModal}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center shadow-sm font-medium"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Course
+          </button>
+        )}
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">

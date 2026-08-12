@@ -47,7 +47,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Manager")]
     public async Task<ActionResult<CourseDto>> CreateCourse([FromBody] CreateCourseDto dto)
     {
         var deptClaim = User.FindFirst("DepartmentId")?.Value;
@@ -58,7 +58,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Manager")]
     public async Task<ActionResult<CourseDto>> UpdateCourse(int id, [FromBody] UpdateCourseDto dto)
     {
         try
@@ -73,7 +73,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Manager")]
     public async Task<ActionResult> DeleteCourse(int id)
     {
         try
