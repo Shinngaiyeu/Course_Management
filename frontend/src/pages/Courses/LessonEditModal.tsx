@@ -202,13 +202,9 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
 
       // Handle deferred uploads first
       if (lessonType === 'video' && selectedVideoFile) {
-        toast.loading('Uploading video to Cloudinary...', { id: 'upload-video' });
         finalVideoUrl = await courseService.uploadFile(selectedVideoFile);
-        toast.success('Video uploaded!', { id: 'upload-video' });
       } else if (lessonType === 'document' && selectedDocumentFile) {
-        toast.loading('Uploading document to Cloudinary...', { id: 'upload-doc' });
         finalDocumentUrl = await courseService.uploadFile(selectedDocumentFile);
-        toast.success('Document uploaded!', { id: 'upload-doc' });
       }
 
       if (lessonType === 'document') {
@@ -231,8 +227,6 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
       
     } catch (err) {
       toast.error('Failed to save lesson or upload file.');
-      toast.dismiss('upload-video');
-      toast.dismiss('upload-doc');
     } finally {
       setIsSaving(false);
     }
