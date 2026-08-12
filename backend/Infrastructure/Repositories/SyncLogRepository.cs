@@ -20,9 +20,24 @@ public class SyncLogRepository : ISyncLogRepository
         return await _context.SyncLogs.FindAsync(id);
     }
 
-    public async Task<IEnumerable<SyncLog>> GetAllAsync()
+    public async Task<(IEnumerable<SyncLog> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize, string? status = null)
     {
-        return await _context.SyncLogs.ToListAsync();
+        var query = _context.SyncLogs.AsQueryable();
+
+        if (!string.IsNullOrEmpty(status) && status != "All")
+        {
+            query = query.Where(l => l.Status == status);
+        }
+
+        int totalCount = await query.CountAsync();
+        
+        var items = await query
+            .OrderByDescending(l => l.SyncDate)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
     }
 
     public async Task AddAsync(SyncLog log)

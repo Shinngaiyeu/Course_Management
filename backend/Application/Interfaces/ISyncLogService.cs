@@ -4,6 +4,7 @@ namespace Application.Interfaces;
 
 public interface ISyncLogService
 {
-    Task<IEnumerable<SyncLogDto>> GetAllLogsAsync();
+    Task<PagedResult<SyncLogDto>> GetPagedLogsAsync(int pageNumber, int pageSize, string? status = null);
     Task<SyncLogDto?> GetLogByIdAsync(int id);
+    Task<bool> RetrySyncLogAsync(int id);
 }
