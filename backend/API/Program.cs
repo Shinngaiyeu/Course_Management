@@ -60,6 +60,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<ISyncLogRepository, SyncLogRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 // Register Services
 builder.Services.AddScoped<ISyncService, SyncService>();
@@ -67,7 +68,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ISyncLogService, SyncLogService>();
+builder.Services.AddScoped<IUploadService, Infrastructure.Services.CloudinaryUploadService>();
 
 // Configure JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForJWTTokenGeneration123!@#";

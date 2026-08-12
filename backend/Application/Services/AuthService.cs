@@ -43,6 +43,11 @@ public class AuthService : IAuthService
             claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
         }
 
+        if (user.DepartmentId.HasValue)
+        {
+            claims.Add(new Claim("DepartmentId", user.DepartmentId.Value.ToString()));
+        }
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),

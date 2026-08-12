@@ -1,13 +1,25 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Users, LayoutDashboard, Settings } from 'lucide-react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Users, LayoutDashboard, Settings, BookOpen } from 'lucide-react';
+import { authService } from '../services/authService';
 
 export const Sidebar: React.FC = () => {
-  const navItems = [
-    { name: 'User Management', path: '/users', icon: Users },
-    { name: 'Departments', path: '/departments', icon: LayoutDashboard },
-    { name: 'Sync Logs', path: '/sync-logs', icon: Settings },
-  ];
+  const roles = authService.getRoles();
+  const { username } = authService.getUserInfo();
+  const initials = username.substring(0, 2).toUpperCase();
+  
+  let navItems: any[] = [];
+  if (roles.includes('Admin')) {
+    navItems = [
+      { name: 'User Management', path: '/users', icon: Users },
+      { name: 'Departments', path: '/departments', icon: LayoutDashboard },
+      { name: 'Sync Logs', path: '/sync-logs', icon: Settings },
+    ];
+  } else if (roles.includes('Manager')) {
+    navItems = [
+      { name: 'Courses', path: '/courses', icon: BookOpen }
+    ];
+  }
 
   return (
     <div className="flex flex-col w-64 bg-white h-screen border-r border-gray-200">
@@ -43,14 +55,14 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center">
           <div className="flex-shrink-0">
             <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-sm text-blue-700">
-              AD
+              {initials}
             </div>
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900">Admin User</p>
+            <p className="text-sm font-medium text-gray-900">{username}</p>
             <button 
               onClick={() => {
-                localStorage.removeItem('token');
+                localStorage.clear();
                 window.location.href = '/login';
               }}
               className="text-xs font-medium text-red-600 cursor-pointer hover:text-red-500"
