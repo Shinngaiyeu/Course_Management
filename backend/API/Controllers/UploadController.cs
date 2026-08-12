@@ -20,7 +20,7 @@ public class UploadController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> UploadFile(IFormFile file)
+    public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
     {
         try
         {
