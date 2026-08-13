@@ -30,7 +30,7 @@ public class SyncLogRepository : ISyncLogRepository
         }
 
         int totalCount = await query.CountAsync();
-        
+
         var items = await query
             .OrderByDescending(l => l.SyncDate)
             .Skip((pageNumber - 1) * pageSize)

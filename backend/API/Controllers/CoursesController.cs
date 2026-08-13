@@ -20,8 +20,8 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<PagedResult<CourseDto>>> GetAllCourses(
-        [FromQuery] int pageNumber = 1, 
-        [FromQuery] int pageSize = 10, 
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
         [FromQuery] string? searchTerm = null)
     {
         bool isLearner = User.IsInRole("Learner");

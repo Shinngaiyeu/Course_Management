@@ -26,21 +26,18 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
   const [content, setContent] = useState('');
   const [orderIndex, setOrderIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   const [lessonType, setLessonType] = useState<LessonType>('text');
-  
-  // Specific fields
+
   const [videoUrl, setVideoUrl] = useState('');
   const [documentUrl, setDocumentUrl] = useState('');
-  
-  // Deferred file upload state
+
   const [selectedVideoFile, setSelectedVideoFile] = useState<File | null>(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string>('');
-  
+
   const [selectedDocumentFile, setSelectedDocumentFile] = useState<File | null>(null);
   const [documentPreviewUrl, setDocumentPreviewUrl] = useState<string>('');
 
-  // Quiz states
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([
     { question: '', options: ['', ''], correctAnswer: 0 }
   ]);
@@ -50,7 +47,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
       setTitle(lesson.title);
       setContent(lesson.content || '');
       setOrderIndex(lesson.orderIndex);
-      
+
       let parsedMeta: any = {};
       try {
         if (lesson.metadata) {
@@ -86,13 +83,13 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
         setVideoUrl('');
         setDocumentUrl('');
       }
-      
+
       setSelectedVideoFile(null);
       setVideoPreviewUrl('');
       setSelectedDocumentFile(null);
       setDocumentPreviewUrl('');
       setIsSaving(false);
-      
+
     } else if (isOpen) {
       setTitle('');
       setContent('');
@@ -109,7 +106,6 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
     }
   }, [lesson, isOpen]);
 
-  // Clean up object URLs to avoid memory leaks
   useEffect(() => {
     return () => {
       if (videoPreviewUrl && videoPreviewUrl.startsWith('blob:')) {
@@ -121,7 +117,6 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
     };
   }, [videoPreviewUrl, documentPreviewUrl]);
 
-  // Quiz Handlers
   const handleAddQuestion = () => {
     setQuizQuestions([...quizQuestions, { question: '', options: ['', ''], correctAnswer: 0 }]);
   };
@@ -149,7 +144,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
     const newQs = [...quizQuestions];
     if (newQs[qIdx].options.length <= 2) return;
     newQs[qIdx].options.splice(optIdx, 1);
-    
+
     let ca = newQs[qIdx].correctAnswer;
     if (ca >= newQs[qIdx].options.length) {
       newQs[qIdx].correctAnswer = Math.max(0, newQs[qIdx].options.length - 1);
@@ -158,7 +153,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
     } else if (ca > optIdx) {
       newQs[qIdx].correctAnswer = ca - 1;
     }
-    
+
     setQuizQuestions(newQs);
   };
 
@@ -174,14 +169,13 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
     setQuizQuestions(newQs);
   };
 
-  // File Handlers
   const handleVideoSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setSelectedVideoFile(file);
     const objectUrl = URL.createObjectURL(file);
     setVideoPreviewUrl(objectUrl);
-    setVideoUrl(''); // clear existing URL if selecting new file
+    setVideoUrl('');
   };
 
   const handleDocumentSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +194,6 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
       let finalVideoUrl = videoUrl;
       let finalDocumentUrl = documentUrl;
 
-      // Handle deferred uploads first
       if (lessonType === 'video' && selectedVideoFile) {
         finalVideoUrl = await courseService.uploadFile(selectedVideoFile);
       } else if (lessonType === 'document' && selectedDocumentFile) {
@@ -224,7 +217,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
         metadata: finalMetadata,
         orderIndex
       });
-      
+
     } catch (err) {
       toast.error('Failed to save lesson or upload file.');
     } finally {
@@ -256,7 +249,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
             placeholder="e.g. Getting Started with React"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Lesson Type</label>
           <select
@@ -271,20 +264,20 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
           </select>
         </div>
 
-        {/* Dynamic Fields based on Lesson Type */}
+        {}
         {lessonType === 'video' && (
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
             <label className="block text-sm font-medium text-blue-900 mb-1">Video Source</label>
             <div className="flex flex-col gap-3">
-              <input 
-                type="file" 
-                accept="video/*" 
+              <input
+                type="file"
+                accept="video/*"
                 onChange={handleVideoSelection}
                 className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
               />
-              
+
               <div className="text-center text-xs text-blue-500 font-medium">OR ENTER URL</div>
-              
+
               <input
                 type="text"
                 value={videoUrl}
@@ -296,13 +289,13 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
                 className="block w-full border border-blue-200 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter YouTube or Cloudinary URL"
               />
-              
-              {/* Preview Box */}
+
+              {}
               {(videoPreviewUrl || videoUrl) && (
                 <div className="mt-2 rounded-md overflow-hidden bg-black aspect-video relative flex items-center justify-center">
-                  <video 
-                    src={videoPreviewUrl || videoUrl} 
-                    controls 
+                  <video
+                    src={videoPreviewUrl || videoUrl}
+                    controls
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -315,15 +308,15 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
           <div className="bg-orange-50 p-4 rounded-lg border border-orange-100">
             <label className="block text-sm font-medium text-orange-900 mb-1">Document (PDF) Source</label>
             <div className="flex flex-col gap-3">
-              <input 
-                type="file" 
-                accept=".pdf,.doc,.docx" 
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
                 onChange={handleDocumentSelection}
                 className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200 cursor-pointer"
               />
-              
+
               <div className="text-center text-xs text-orange-500 font-medium">OR ENTER URL</div>
-              
+
               <input
                 type="text"
                 value={documentUrl}
@@ -335,8 +328,8 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
                 className="block w-full border border-orange-200 rounded-md px-3 py-2 text-sm focus:ring-orange-500 focus:border-orange-500"
                 placeholder="Enter Document URL"
               />
-              
-              {/* Preview Box */}
+
+              {}
               {(documentPreviewUrl || documentUrl) && (
                 <div className="mt-2 h-40 bg-white border border-orange-200 rounded-md flex items-center justify-center flex-col text-orange-400">
                   <FileText className="h-10 w-10 mb-2" />
@@ -353,7 +346,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
             {quizQuestions.map((q, qIdx) => (
               <div key={qIdx} className="bg-purple-50 p-4 rounded-lg border border-purple-200 relative">
                 {quizQuestions.length > 1 && (
-                  <button 
+                  <button
                     type="button"
                     onClick={() => handleRemoveQuestion(qIdx)}
                     className="absolute top-2 right-2 p-1.5 text-purple-400 hover:text-red-600 bg-white rounded-full shadow-sm hover:shadow transition-all"
@@ -362,12 +355,12 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
                     <Trash2 className="h-4 w-4" />
                   </button>
                 )}
-                
+
                 <h4 className="text-sm font-bold text-purple-800 mb-3 flex items-center">
                   <HelpCircle className="h-4 w-4 mr-1" />
                   Question {qIdx + 1}
                 </h4>
-                
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-purple-900 mb-1">Question Content</label>
@@ -423,7 +416,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
                 </div>
               </div>
             ))}
-            
+
             <button
               type="button"
               onClick={handleAddQuestion}
@@ -454,7 +447,7 @@ export const LessonEditModal: React.FC<LessonEditModalProps> = ({ moduleId, less
             className="block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-        
+
         <div className="pt-4 flex justify-end gap-3 border-t border-gray-200 mt-4">
           <Button variant="secondary" onClick={onClose} disabled={isSaving}>Cancel</Button>
           <Button onClick={handleSave} disabled={isSaveDisabled()}>

@@ -24,7 +24,7 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({ isOpen, onClos
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
   const toggleRole = (roleId: number) => {
-    setSelectedRoles(prev => 
+    setSelectedRoles(prev =>
       prev.includes(roleId) ? prev.filter(id => id !== roleId) : [...prev, roleId]
     );
   };

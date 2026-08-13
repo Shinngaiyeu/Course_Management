@@ -20,7 +20,7 @@ export const CourseManagementPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
@@ -74,7 +74,7 @@ export const CourseManagementPage: React.FC = () => {
   };
 
   const openEditModal = (e: React.MouseEvent, course: Course) => {
-    e.stopPropagation(); // Prevent row click
+    e.stopPropagation();
     setEditingCourse(course);
     setIsModalOpen(true);
   };
@@ -92,7 +92,7 @@ export const CourseManagementPage: React.FC = () => {
           </p>
         </div>
         {isManager && (
-          <button 
+          <button
             onClick={openCreateModal}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center shadow-sm font-medium"
           >
@@ -125,13 +125,13 @@ export const CourseManagementPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {pagedData.items.map((course) => (
-              <CourseAccordionItem 
-                key={course.id} 
-                course={course} 
-                onEditCourse={openEditModal} 
+              <CourseAccordionItem
+                key={course.id}
+                course={course}
+                onEditCourse={openEditModal}
               />
             ))}
-            
+
             {pagedData.items.length === 0 && (
               <div className="py-12 text-center text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
                 <BookOpen className="mx-auto h-12 w-12 text-gray-400 mb-3" />

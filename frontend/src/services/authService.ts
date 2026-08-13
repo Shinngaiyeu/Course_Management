@@ -5,11 +5,11 @@ export const authService = {
     const response = await api.post<{ token: string }>('/auth/login', { email, password });
     return response.data.token;
   },
-  
+
   logout: () => {
     localStorage.clear();
   },
-  
+
   getRoles: (): string[] => {
     const token = localStorage.getItem('token');
     if (!token) return [];
@@ -23,24 +23,24 @@ export const authService = {
       return [];
     }
   },
-  
+
   getUserInfo: () => {
     const token = localStorage.getItem('token');
     if (!token) return { username: 'User' };
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      // Check standard and short claim for username
+
       const username = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || payload.unique_name || 'User';
       return { username };
     } catch {
       return { username: 'User' };
     }
   },
-  
+
   getToken: () => {
     return localStorage.getItem('token');
   },
-  
+
   isAuthenticated: () => {
     return !!localStorage.getItem('token');
   }

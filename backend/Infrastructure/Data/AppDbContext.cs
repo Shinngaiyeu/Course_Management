@@ -22,7 +22,6 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // UserRole Many-to-Many
         modelBuilder.Entity<UserRole>()
             .HasKey(ur => new { ur.UserId, ur.RoleId });
 
@@ -36,16 +35,12 @@ public class AppDbContext : DbContext
             .WithMany(r => r.UserRoles)
             .HasForeignKey(ur => ur.RoleId);
 
-        // Optional: Seed Roles
         modelBuilder.Entity<Role>().HasData(
             new Role { Id = 1, Name = "Admin" },
             new Role { Id = 2, Name = "Manager" },
             new Role { Id = 3, Name = "Learner" }
         );
 
-
-
-        // Seed Sample Departments
         modelBuilder.Entity<Department>().HasData(
             new Department { Id = 1, Name = "IT Department", Description = "Information Technology and Infrastructure" },
             new Department { Id = 2, Name = "HR Department", Description = "Human Resources and Employee Relations" },
@@ -53,7 +48,6 @@ public class AppDbContext : DbContext
             new Department { Id = 4, Name = "Sales Department", Description = "Sales and Customer Acquisition" }
         );
 
-        // Course configurations
         modelBuilder.Entity<Course>()
             .HasOne(c => c.Instructor)
             .WithMany()

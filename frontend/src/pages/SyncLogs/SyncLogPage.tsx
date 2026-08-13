@@ -6,14 +6,12 @@ import toast from 'react-hot-toast';
 const SyncLogPage: React.FC = () => {
   const [logs, setLogs] = useState<SyncLog[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Pagination & Filters
+
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const pageSize = 10;
   const [statusFilter, setStatusFilter] = useState('All');
 
-  // Modal State
   const [selectedPayload, setSelectedPayload] = useState<string | null>(null);
   const [retryingId, setRetryingId] = useState<number | null>(null);
 
@@ -41,7 +39,7 @@ const SyncLogPage: React.FC = () => {
     try {
       await syncLogService.retrySyncLog(id);
       toast.success('Retry successful!', { id: toastId });
-      fetchLogs(page, statusFilter); // refresh
+      fetchLogs(page, statusFilter);
     } catch (error) {
       console.error('Retry failed', error);
       toast.error('Retry failed. Please check payload.', { id: toastId });
@@ -59,11 +57,11 @@ const SyncLogPage: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-800">HRIS Sync Logs</h2>
           <p className="text-gray-500 text-sm mt-1">History of user synchronizations from HRIS</p>
         </div>
-        
-        {/* Filter */}
+
+        {}
         <div className="flex items-center space-x-2">
           <Filter className="w-5 h-5 text-gray-400" />
-          <select 
+          <select
             className="border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
             value={statusFilter}
             onChange={(e) => {
@@ -107,22 +105,22 @@ const SyncLogPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">{log.message}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
-                      <button 
+                      <button
                         onClick={() => setSelectedPayload(log.payload)}
                         className="text-blue-600 hover:text-blue-900 inline-flex items-center"
                         title="View Payload"
                       >
                         <Eye className="w-4 h-4 mr-1" /> View
                       </button>
-                      
+
                       {log.status === 'Failed' && (
-                        <button 
+                        <button
                           onClick={() => handleRetry(log.id)}
                           disabled={retryingId === log.id}
                           className="text-orange-600 hover:text-orange-900 inline-flex items-center disabled:opacity-50"
                           title="Retry Sync"
                         >
-                          <RefreshCw className={`w-4 h-4 mr-1 ${retryingId === log.id ? 'animate-spin' : ''}`} /> 
+                          <RefreshCw className={`w-4 h-4 mr-1 ${retryingId === log.id ? 'animate-spin' : ''}`} />
                           Retry
                         </button>
                       )}
@@ -140,8 +138,8 @@ const SyncLogPage: React.FC = () => {
             </table>
           </div>
         )}
-        
-        {/* Pagination */}
+
+        {}
         {!loading && totalPages > 1 && (
           <div className="bg-white px-4 py-3 border-t border-gray-200 flex items-center justify-between sm:px-6">
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
@@ -173,7 +171,7 @@ const SyncLogPage: React.FC = () => {
         )}
       </div>
 
-      {/* Payload Modal */}
+      {}
       {selectedPayload && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
           <div className="fixed inset-0 bg-black opacity-50" onClick={() => setSelectedPayload(null)}></div>

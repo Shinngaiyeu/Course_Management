@@ -19,8 +19,7 @@ export const LearnerCourseDetailsPage: React.FC = () => {
         setLoading(true);
         const data = await courseService.getCourse(Number(id));
         setCourse(data);
-        
-        // Expand first module by default
+
         if (data.modules && data.modules.length > 0) {
           setExpandedModules({ [data.modules[0].id]: true });
         }
@@ -59,7 +58,7 @@ export const LearnerCourseDetailsPage: React.FC = () => {
 
   return (
     <div className="w-full pb-20">
-      {/* Dark Header Banner */}
+      {}
       <div className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
           <div className="flex-1">
@@ -71,7 +70,7 @@ export const LearnerCourseDetailsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-3xl">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Course Content</h2>
@@ -84,7 +83,7 @@ export const LearnerCourseDetailsPage: React.FC = () => {
               const isExpanded = !!expandedModules[mod.id];
               return (
                 <div key={mod.id} className="border-b border-gray-200 last:border-b-0">
-                  <button 
+                  <button
                     onClick={() => toggleModule(mod.id)}
                     className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
                   >
@@ -94,14 +93,14 @@ export const LearnerCourseDetailsPage: React.FC = () => {
                     </div>
                     <span className="text-sm text-gray-500 font-normal">{mod.lessons?.length || 0} lessons</span>
                   </button>
-                  
+
                   {isExpanded && (
                     <div className="bg-white">
                       {mod.lessons?.map((lesson, lIndex) => {
                         const isActive = activeLessonVideo === lesson.id;
                         return (
                         <div key={lesson.id} className="flex flex-col border-t border-gray-100 first:border-t-0">
-                          <div 
+                          <div
                             className={`p-4 pl-12 flex items-start justify-between cursor-pointer hover:bg-gray-50 group transition-colors ${isActive ? 'bg-blue-50/50' : ''}`}
                             onClick={() => toggleLessonVideo(lesson.id)}
                           >
@@ -116,8 +115,8 @@ export const LearnerCourseDetailsPage: React.FC = () => {
                             </div>
                             <Lock className="h-4 w-4 text-gray-300 hidden" />
                           </div>
-                          
-                          {/* Video Player */}
+
+                          {}
                           {isActive && lesson.videoUrl && (
                             <div className="px-12 pb-4 bg-gray-50 border-t border-gray-100">
                               <div className="mt-4 rounded-md overflow-hidden bg-black aspect-video w-full shadow-md max-w-3xl">
@@ -146,7 +145,7 @@ export const LearnerCourseDetailsPage: React.FC = () => {
                 </div>
               );
             })}
-            
+
             {(!course.modules || course.modules.length === 0) && (
               <div className="p-8 text-center text-gray-500">
                 This course currently has no content.

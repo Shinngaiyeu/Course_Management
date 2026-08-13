@@ -22,16 +22,15 @@ public class AuthService : IAuthService
     public async Task<string?> AuthenticateAsync(string email, string password)
     {
         var user = await _userRepository.GetByEmailAsync(email);
-        
-        // Mock password check for assessment purposes
-        if (user == null || user.PasswordHash != password) 
+
+        if (user == null || user.PasswordHash != password)
         {
             return null;
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "supersecretkey");
-        
+
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

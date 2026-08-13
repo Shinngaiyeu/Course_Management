@@ -21,9 +21,8 @@ interface CourseEditModalProps {
 export const CourseEditModal: React.FC<CourseEditModalProps> = ({ course, isOpen, onClose, onSave }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState<0 | 1 | 2>(0); // 0=Draft, 1=Published, 2=Archived
-  
-  // AI Feature States
+  const [status, setStatus] = useState<0 | 1 | 2>(0);
+
   const [rawContent, setRawContent] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -106,7 +105,7 @@ export const CourseEditModal: React.FC<CourseEditModalProps> = ({ course, isOpen
             className="block w-full border border-blue-200 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 mb-2 bg-white"
             placeholder="Paste raw notes, syllabus, or ideas here, and let AI generate the Title and Description..."
           />
-          <button 
+          <button
             type="button"
             onClick={handleAiSuggest}
             disabled={isGenerating || !rawContent}

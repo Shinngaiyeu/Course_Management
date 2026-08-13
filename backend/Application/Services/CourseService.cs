@@ -22,7 +22,7 @@ public class CourseService : ICourseService
         var result = await _courseRepository.GetPagedCoursesAsync(pageNumber, pageSize, searchTerm, departmentId, onlyPublished);
         var courses = result.Items;
         var totalCount = result.TotalCount;
-        
+
         var pagedCourses = courses
             .Select(c => new CourseDto
             {
@@ -37,12 +37,12 @@ public class CourseService : ICourseService
             })
             .ToList();
 
-        return new PagedResult<CourseDto> 
-        { 
-            Items = pagedCourses, 
-            TotalCount = totalCount, 
-            PageNumber = pageNumber, 
-            PageSize = pageSize 
+        return new PagedResult<CourseDto>
+        {
+            Items = pagedCourses,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
         };
     }
 

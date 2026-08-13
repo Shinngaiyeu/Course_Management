@@ -1,4 +1,4 @@
-// import api from './api';
+
 
 export interface Role {
   id: number;
@@ -36,12 +36,12 @@ export const userService = {
       pageNumber: page.toString(),
       pageSize: pageSize.toString()
     });
-    
+
     if (departmentId) params.append('departmentId', departmentId.toString());
     if (search) params.append('searchTerm', search);
 
     const data = (await api.get<any>(`/users?${params.toString()}`)).data;
-    
+
     return {
       ...data,
       items: data.items.map((u: any) => ({
@@ -56,7 +56,7 @@ export const userService = {
     };
   },
   updateUser: async (user: User): Promise<User> => {
-    // We map frontend User back to what backend expects for update
+
     const payload = {
       id: user.id,
       username: user.username,

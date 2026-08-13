@@ -28,7 +28,7 @@ public class AIAgentController : ControllerBase
         var apiKey = _configuration["AI:GeminiKey"];
         if (string.IsNullOrEmpty(apiKey) || apiKey == "YOUR_GEMINI_API_KEY_HERE")
         {
-            // Fallback to mock if no key
+
             await Task.Delay(1500);
             var suggestedTitle = "Advanced: " + (request.RawContent.Length > 20 ? request.RawContent.Substring(0, 20) + "..." : request.RawContent);
             var suggestedDescription = $"This is an AI-generated summary for your input: '{request.RawContent}'. This course will cover everything you need to master this topic, providing hands-on exercises and expert insights.";
@@ -36,7 +36,7 @@ public class AIAgentController : ControllerBase
         }
 
         var prompt = $"Based on the following syllabus/notes, generate a concise Course Title and a 2-3 sentence engaging Course Description. Format the response exactly like this:\nTitle: [Generated Title]\nDescription: [Generated Description]\n\nSyllabus:\n{request.RawContent}";
-        
+
         var requestBody = new
         {
             contents = new[]
@@ -47,7 +47,7 @@ public class AIAgentController : ControllerBase
 
         var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync($"https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key={apiKey}", jsonContent);
-        
+
         if (!response.IsSuccessStatusCode)
         {
             var errorDetails = await response.Content.ReadAsStringAsync();

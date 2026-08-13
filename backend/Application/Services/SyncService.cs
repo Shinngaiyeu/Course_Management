@@ -14,8 +14,8 @@ public class SyncService : ISyncService
     private readonly ISyncLogRepository _syncLogRepository;
 
     public SyncService(
-        IUserRepository userRepository, 
-        IRoleRepository roleRepository, 
+        IUserRepository userRepository,
+        IRoleRepository roleRepository,
         IDepartmentRepository departmentRepository,
         ISyncLogRepository syncLogRepository)
     {
@@ -34,7 +34,7 @@ public class SyncService : ISyncService
 
         try
         {
-            // Department Logic
+
             var department = await _departmentRepository.GetByNameAsync(payload.DepartmentName);
             if (department == null)
             {
@@ -42,14 +42,12 @@ public class SyncService : ISyncService
                 await _departmentRepository.AddAsync(department);
             }
 
-            // Role Logic (Assuming roles are pre-seeded, otherwise fail or create)
             var role = await _roleRepository.GetByNameAsync(payload.Role);
             if (role == null)
             {
                 throw new Exception($"Role {payload.Role} does not exist.");
             }
 
-            // User Logic
             var user = await _userRepository.GetByUsernameAsync(payload.Username);
             if (user == null)
             {
@@ -59,9 +57,9 @@ public class SyncService : ISyncService
                     Username = payload.Username,
                     Email = payload.Email,
                     DepartmentId = department.Id,
-                    PasswordHash = "dummyhash" // In real world, HRIS might not sync password
+                    PasswordHash = "dummyhash"
                 };
-                
+
                 user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = role.Id });
                 await _userRepository.AddAsync(user);
             }
@@ -70,13 +68,12 @@ public class SyncService : ISyncService
                 user.Email = payload.Email;
                 user.DepartmentId = department.Id;
                 user.UpdatedAt = DateTime.UtcNow;
-                
-                // Simplified role update
+
                 if (!user.UserRoles.Any(ur => ur.RoleId == role.Id))
                 {
                     user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = role.Id });
                 }
-                
+
                 await _userRepository.UpdateAsync(user);
             }
 
