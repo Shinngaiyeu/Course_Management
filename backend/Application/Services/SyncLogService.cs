@@ -20,7 +20,7 @@ public class SyncLogService : ISyncLogService
     public async Task<PagedResult<SyncLogDto>> GetPagedLogsAsync(int pageNumber, int pageSize, string? status = null)
     {
         var (items, totalCount) = await _repository.GetPagedAsync(pageNumber, pageSize, status);
-        
+
         var dtos = items.Select(l => new SyncLogDto
         {
             Id = l.Id,

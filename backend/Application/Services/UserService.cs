@@ -12,7 +12,7 @@ public class UserService : IUserService
     private readonly IDepartmentRepository _departmentRepository;
 
     public UserService(
-        IUserRepository repository, 
+        IUserRepository repository,
         IRoleRepository roleRepository,
         IDepartmentRepository departmentRepository)
     {
@@ -24,9 +24,9 @@ public class UserService : IUserService
     public async Task<PagedResult<UserDto>> GetPagedUsersAsync(UserQueryParameters query)
     {
         var (items, totalCount) = await _repository.GetPagedAsync(
-            query.PageNumber, 
-            query.PageSize, 
-            query.DepartmentId, 
+            query.PageNumber,
+            query.PageSize,
+            query.DepartmentId,
             query.SearchTerm);
 
         return new PagedResult<UserDto>
@@ -79,7 +79,7 @@ public class UserService : IUserService
         if (dto.Email != null) user.Email = dto.Email;
         if (dto.DepartmentId.HasValue) user.DepartmentId = dto.DepartmentId.Value;
         if (dto.IsActive.HasValue) user.IsActive = dto.IsActive.Value;
-        
+
         user.UpdatedAt = DateTime.UtcNow;
         await _repository.UpdateAsync(user);
 

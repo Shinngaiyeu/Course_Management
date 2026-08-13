@@ -7,7 +7,7 @@ export const Sidebar: React.FC = () => {
   const roles = authService.getRoles();
   const { username } = authService.getUserInfo();
   const initials = username.substring(0, 2).toUpperCase();
-  
+
   let navItems: any[] = [];
   if (roles.includes('Admin')) {
     navItems = [
@@ -26,7 +26,7 @@ export const Sidebar: React.FC = () => {
       <div className="flex items-center justify-center h-16 border-b border-gray-200">
         <h1 className="text-xl font-bold tracking-wider text-blue-600">LMS Admin</h1>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto py-4">
         <nav className="px-3 space-y-1">
           {navItems.map((item) => {
@@ -35,10 +35,10 @@ export const Sidebar: React.FC = () => {
               <NavLink
                 key={item.name}
                 to={item.path}
-                className={({ isActive }) => 
+                className={({ isActive }) =>
                   `flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
-                    isActive 
-                      ? 'bg-blue-50 text-blue-700' 
+                    isActive
+                      ? 'bg-blue-50 text-blue-700'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`
                 }
@@ -50,7 +50,7 @@ export const Sidebar: React.FC = () => {
           })}
         </nav>
       </div>
-      
+
       <div className="p-4 border-t border-gray-200">
         <div className="flex items-center">
           <div className="flex-shrink-0">
@@ -60,7 +60,7 @@ export const Sidebar: React.FC = () => {
           </div>
           <div className="ml-3">
             <p className="text-sm font-medium text-gray-900">{username}</p>
-            <button 
+            <button
               onClick={() => {
                 localStorage.clear();
                 window.location.href = '/login';

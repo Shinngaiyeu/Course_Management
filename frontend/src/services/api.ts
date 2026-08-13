@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5206/api', // Connects to the real backend
+  baseURL: 'http://localhost:5206/api',
 });
 
 api.interceptors.request.use((config) => {
@@ -18,12 +18,9 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      
-      // Import dynamically or use standard window redirect to avoid circular dependencies
+
       window.location.href = '/login';
-      
-      // We can use a custom event or directly import toast if it doesn't cause issues
-      // But standard toast from react-hot-toast works fine globally.
+
       import('react-hot-toast').then(module => {
         module.default.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!');
       });

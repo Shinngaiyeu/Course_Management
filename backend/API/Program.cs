@@ -10,7 +10,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Configuration.AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -41,7 +40,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configure CORS for frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -52,18 +50,15 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Register DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<ISyncLogRepository, SyncLogRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
-// Register Services
 builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -73,7 +68,6 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ISyncLogService, SyncLogService>();
 builder.Services.AddScoped<IUploadService, Infrastructure.Services.CloudinaryUploadService>();
 
-// Configure JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForJWTTokenGeneration123!@#";
 var key = Encoding.UTF8.GetBytes(jwtKey);
 
@@ -100,13 +94,11 @@ builder.Services.AddAuthentication(x =>
 
 var app = builder.Build();
 
-// Run Database Seeder
 using (var scope = app.Services.CreateScope())
 {
     await Infrastructure.Data.DbSeeder.SeedAsync(scope.ServiceProvider);
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -118,7 +110,6 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Add our custom Middleware to check JWT Claims
 app.UseMiddleware<API.Middleware.JwtClaimsMiddleware>();
 
 app.MapControllers();

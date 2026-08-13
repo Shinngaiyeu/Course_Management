@@ -9,7 +9,7 @@ namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Manager")]
+[Authorize(Roles = "Manager")]
 public class UploadController : ControllerBase
 {
     private readonly IUploadService _uploadService;

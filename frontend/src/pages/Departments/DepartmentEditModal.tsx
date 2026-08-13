@@ -4,7 +4,7 @@ import { Button } from '@/components/common/Button';
 import { Department } from '@/services/departmentService';
 
 interface DepartmentEditModalProps {
-  department: Department | null; // null means create mode
+  department: Department | null;
   isOpen: boolean;
   onClose: () => void;
   onSave: (payload: Omit<Department, 'id'>) => void;

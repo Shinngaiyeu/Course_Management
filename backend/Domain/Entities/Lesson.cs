@@ -8,6 +8,6 @@ public class Lesson
     public string Title { get; set; } = string.Empty;
     public string? Content { get; set; }
     public string? VideoUrl { get; set; }
-    public string? Metadata { get; set; } // JSON string for PDF/Quiz/Video metadata
+    public string? Metadata { get; set; }
     public int OrderIndex { get; set; }
 }

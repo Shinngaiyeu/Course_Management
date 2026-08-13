@@ -19,27 +19,24 @@ export const UserManagementPage: React.FC = () => {
   });
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Filters & Pagination State
+
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedDeptId, setSelectedDeptId] = useState<number | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [lockUser, setLockUser] = useState<User | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-      setCurrentPage(1); // Reset to page 1 on new search
+      setCurrentPage(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Load Departments once
   useEffect(() => {
     const fetchDepts = async () => {
       try {
@@ -52,7 +49,6 @@ export const UserManagementPage: React.FC = () => {
     fetchDepts();
   }, []);
 
-  // Fetch Users based on dependencies
   useEffect(() => {
     fetchUsers();
   }, [currentPage, selectedDeptId, debouncedSearch]);
@@ -83,7 +79,7 @@ export const UserManagementPage: React.FC = () => {
       const updatedStatus = lockUser.status === 'Active' ? 'Locked' : 'Active';
       await userService.updateUser({ ...lockUser, status: updatedStatus });
       toast.success(`Account successfully ${updatedStatus.toLowerCase()}`);
-      fetchUsers(); // Refresh current page
+      fetchUsers();
       setLockUser(null);
     } catch (error) {
       console.error('Failed to update user status', error);
@@ -95,7 +91,7 @@ export const UserManagementPage: React.FC = () => {
     try {
       await userService.updateUser(updatedUser);
       toast.success('User updated successfully');
-      fetchUsers(); // Refresh current page
+      fetchUsers();
       setEditingUser(null);
     } catch (error) {
       console.error('Failed to update user', error);
@@ -107,7 +103,7 @@ export const UserManagementPage: React.FC = () => {
     try {
       await userService.createUser(payload);
       toast.success('User created successfully');
-      fetchUsers(); // Refresh current page
+      fetchUsers();
       setIsCreateOpen(false);
     } catch (error) {
       console.error('Failed to create user', error);
@@ -153,7 +149,7 @@ export const UserManagementPage: React.FC = () => {
               value={selectedDeptId || ''}
               onChange={(e) => {
                 setSelectedDeptId(e.target.value ? Number(e.target.value) : undefined);
-                setCurrentPage(1); // Reset to page 1 on filter change
+                setCurrentPage(1);
               }}
             >
               <option value="">All Departments</option>
@@ -171,8 +167,8 @@ export const UserManagementPage: React.FC = () => {
         ) : (
           <>
             <UserTable users={pagedData.items} onEdit={handleEdit} onToggleLock={handleToggleLock} />
-            
-            {/* Pagination Controls */}
+
+            {}
             <div className="mt-4 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
               <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
@@ -230,9 +226,9 @@ export const UserManagementPage: React.FC = () => {
       )}
 
       {lockUser && (
-        <Modal 
-          isOpen={true} 
-          onClose={() => setLockUser(null)} 
+        <Modal
+          isOpen={true}
+          onClose={() => setLockUser(null)}
           title={lockUser.status === 'Active' ? 'Lock Account' : 'Unlock Account'}
         >
           <div className="flex flex-col items-center p-4">
@@ -247,7 +243,7 @@ export const UserManagementPage: React.FC = () => {
               <Button variant="secondary" className="flex-1" onClick={() => setLockUser(null)}>
                 Cancel
               </Button>
-              <button 
+              <button
                 className={`flex-1 rounded-md px-4 py-2 font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${lockUser.status === 'Active' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'}`}
                 onClick={handleConfirmLock}
               >

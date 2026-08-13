@@ -41,7 +41,7 @@ public class DepartmentService : IDepartmentService
 
         dep.Name = dto.Name;
         if (dto.Description != null) dep.Description = dto.Description;
-        
+
         await _repository.UpdateAsync(dep);
 
         return new DepartmentDto { Id = dep.Id, Name = dep.Name, Description = dep.Description };

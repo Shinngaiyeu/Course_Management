@@ -39,7 +39,7 @@ public class CourseRepository : ICourseRepository
         }
 
         var totalCount = await query.CountAsync();
-        
+
         var items = await query
             .OrderByDescending(c => c.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)

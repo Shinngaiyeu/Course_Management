@@ -25,7 +25,7 @@ export interface Course {
   description?: string;
   instructorId?: string;
   instructorName?: string;
-  status: 0 | 1 | 2; // 0=Draft, 1=Published, 2=Archived
+  status: 0 | 1 | 2;
   createdAt: string;
   updatedAt?: string;
   modules: CourseModule[];
@@ -40,7 +40,7 @@ export interface PagedResult<T> {
 }
 
 export const courseService = {
-  // Course
+
   getCourses: async (page = 1, pageSize = 10, search?: string): Promise<PagedResult<Course>> => {
     const params = new URLSearchParams({
       pageNumber: page.toString(),
@@ -62,9 +62,8 @@ export const courseService = {
     await api.delete(`/courses/${id}`);
   },
 
-  // Module
   createModule: async (courseId: number, payload: any): Promise<CourseModule> => {
-    payload.courseId = courseId; // Ensure payload has courseId
+    payload.courseId = courseId;
     return (await api.post<CourseModule>(`/coursemodules`, payload)).data;
   },
   updateModule: async (id: number, payload: any): Promise<CourseModule> => {
@@ -74,7 +73,6 @@ export const courseService = {
     await api.delete(`/coursemodules/${id}`);
   },
 
-  // Lesson
   createLesson: async (moduleId: number, payload: any): Promise<Lesson> => {
     payload.courseModuleId = moduleId;
     return (await api.post<Lesson>(`/lessons`, payload)).data;
@@ -86,7 +84,6 @@ export const courseService = {
     await api.delete(`/lessons/${id}`);
   },
 
-  // Upload API
   uploadFile: async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
@@ -94,7 +91,6 @@ export const courseService = {
     return response.data.url;
   },
 
-  // AI Agent
   suggestContent: async (rawContent: string): Promise<{ suggestedTitle: string, suggestedDescription: string }> => {
     return (await api.post('/aiagent/suggest', { rawContent })).data;
   }

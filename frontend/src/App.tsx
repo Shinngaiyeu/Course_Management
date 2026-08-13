@@ -17,8 +17,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        
-        {/* Protected Routes */}
+
+        {}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<Navigate to="/users" replace />} />
@@ -28,8 +28,8 @@ function App() {
             <Route path="courses/:id" element={<CourseDetailsPage />} />
             <Route path="sync-logs" element={<SyncLogPage />} />
           </Route>
-          
-          {/* Learner Routes */}
+
+          {}
           <Route path="/learner" element={<LearnerLayout />}>
             <Route index element={<LearnerHomePage />} />
             <Route path="course/:id" element={<LearnerCourseDetailsPage />} />

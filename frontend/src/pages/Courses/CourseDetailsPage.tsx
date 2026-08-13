@@ -13,7 +13,6 @@ export const CourseDetailsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Record<number, boolean>>({});
 
-  // Modal states
   const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
   const [editingModule, setEditingModule] = useState<CourseModule | null>(null);
 
@@ -32,7 +31,6 @@ export const CourseDetailsPage: React.FC = () => {
         const data = await courseService.getCourse(Number(id));
         setCourse(data);
 
-        // Expand first module by default if it exists
         if (data.modules && data.modules.length > 0) {
           setExpandedModules({ [data.modules[0].id]: true });
         }
@@ -52,7 +50,6 @@ export const CourseDetailsPage: React.FC = () => {
     }));
   };
 
-  // Module Handlers
   const openCreateModule = () => {
     setEditingModule(null);
     setIsModuleModalOpen(true);
@@ -92,7 +89,6 @@ export const CourseDetailsPage: React.FC = () => {
     }
   };
 
-  // Lesson Handlers
   const openCreateLesson = (e: React.MouseEvent, moduleId: number) => {
     e.stopPropagation();
     setActiveModuleId(moduleId);

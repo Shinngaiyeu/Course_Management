@@ -19,7 +19,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, departments,
   const [departmentId, setDepartmentId] = useState<number | undefined>(user.departmentId);
 
   const toggleRole = (role: string) => {
-    setSelectedRoles(prev => 
+    setSelectedRoles(prev =>
       prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
     );
   };

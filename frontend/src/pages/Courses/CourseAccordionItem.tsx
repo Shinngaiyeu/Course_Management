@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Edit2, Plus, Trash2, Video, FileText, Loader2, CheckCircle } from 'lucide-react';
 import { Course, CourseModule, Lesson, courseService } from '@/services/courseService';
+import { authService } from '@/services/authService';
 import { ModuleEditModal } from './ModuleEditModal';
 import { LessonEditModal } from './LessonEditModal';
 import toast from 'react-hot-toast';
@@ -21,14 +22,14 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
   const [expandedQuizzes, setExpandedQuizzes] = useState<Record<number, boolean>>({});
   const [expandedVideos, setExpandedVideos] = useState<Record<number, boolean>>({});
 
-  // Module Modal States
   const [isModuleModalOpen, setIsModuleModalOpen] = useState(false);
   const [editingModule, setEditingModule] = useState<CourseModule | null>(null);
 
-  // Lesson Modal States
   const [isLessonModalOpen, setIsLessonModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
   const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
+
+  const isManager = authService.getRoles().includes('Manager');
 
   const toggleExpand = async () => {
     if (!isExpanded && !detailedCourse) {
@@ -73,7 +74,6 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
     }));
   };
 
-  // --- Module Handlers ---
   const handleAddModule = (e: React.MouseEvent) => {
     e.stopPropagation();
     setEditingModule(null);
@@ -114,7 +114,6 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
     }
   };
 
-  // --- Lesson Handlers ---
   const handleAddLesson = (e: React.MouseEvent, moduleId: number) => {
     e.stopPropagation();
     setActiveModuleId(moduleId);
@@ -159,7 +158,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden mb-4 shadow-sm transition-all">
-      <div 
+      <div
         className="px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 border-b border-transparent"
         onClick={toggleExpand}
       >
@@ -171,7 +170,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-bold text-gray-900">{course.title}</h3>
               <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-full ${
-                course.status === 1 ? 'bg-green-100 text-green-700' : 
+                course.status === 1 ? 'bg-green-100 text-green-700' :
                 course.status === 2 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
               }`}>
                 {course.status === 1 ? 'Published' : course.status === 2 ? 'Archived' : 'Draft'}
@@ -180,21 +179,23 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
             <p className="text-sm text-gray-500 mt-1 line-clamp-1">{course.description || 'No description'}</p>
           </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={handleAddModule}
-            className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg flex items-center transition-colors"
-          >
-            <Plus className="h-4 w-4 mr-1" /> Module
-          </button>
-          <button 
-            onClick={(e) => onEditCourse(e, course)}
-            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-          >
-            <Edit2 className="h-4 w-4" />
-          </button>
-        </div>
+
+        {isManager && (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleAddModule}
+              className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg flex items-center transition-colors"
+            >
+              <Plus className="h-4 w-4 mr-1" /> Module
+            </button>
+            <button
+              onClick={(e) => onEditCourse(e, course)}
+              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            >
+              <Edit2 className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {isExpanded && (
@@ -212,7 +213,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
               ) : (
                 detailedCourse.modules.map((mod) => (
                   <div key={mod.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                    <div 
+                    <div
                       className="px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
                       onClick={(e) => toggleModule(e, mod.id)}
                     >
@@ -223,24 +224,28 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                         </h4>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button 
-                          onClick={(e) => handleAddLesson(e, mod.id)}
-                          className="text-xs font-medium text-blue-600 hover:text-blue-800 px-2 py-1 flex items-center"
-                        >
-                          <Plus className="h-3 w-3 mr-1" /> Lesson
-                        </button>
-                        <button 
-                          onClick={(e) => handleEditModule(e, mod)}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                        >
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button 
-                          onClick={(e) => handleDeleteModule(e, mod.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        {isManager && (
+                          <>
+                            <button
+                              onClick={(e) => handleAddLesson(e, mod.id)}
+                              className="text-xs font-medium text-blue-600 hover:text-blue-800 px-2 py-1 flex items-center"
+                            >
+                              <Plus className="h-3 w-3 mr-1" /> Lesson
+                            </button>
+                            <button
+                              onClick={(e) => handleEditModule(e, mod)}
+                              className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                            >
+                              <Edit2 className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={(e) => handleDeleteModule(e, mod.id)}
+                              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -265,12 +270,12 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                     {lesson.content && (
                                       <p className="text-xs text-gray-500 mt-1 line-clamp-2 pr-4">{lesson.content}</p>
                                     )}
-                                    
-                                    {/* Parse and render rich content */}
+
+                                    {}
                                     {(() => {
                                       let parsedMeta: any = {};
                                       try { if (lesson.metadata) parsedMeta = JSON.parse(lesson.metadata); } catch (e) {}
-                                      
+
                                       const isQuiz = parsedMeta.type === 'quiz';
                                       const isDocument = parsedMeta.type === 'document';
                                       const isVideo = !!lesson.videoUrl;
@@ -279,7 +284,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                         <>
                                           {isVideo && (
                                             <div className="mt-3 flex flex-col gap-2">
-                                              <button 
+                                              <button
                                                 onClick={(e) => toggleVideo(e, lesson.id)}
                                                 className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md border border-blue-100 w-max shadow-sm cursor-pointer transition-colors"
                                               >
@@ -287,7 +292,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                                 Video Preview
                                                 {expandedVideos[lesson.id] ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
                                               </button>
-                                              
+
                                               {expandedVideos[lesson.id] && (
                                                 <div className="relative w-72 max-w-full rounded-md overflow-hidden bg-black aspect-video border border-gray-200 shadow-sm">
                                                   <video src={lesson.videoUrl} controls className="w-full h-full object-contain" />
@@ -295,7 +300,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                               )}
                                             </div>
                                           )}
-                                          
+
                                           {isDocument && (
                                             <a href={parsedMeta.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-md transition-colors border border-orange-100 w-max shadow-sm">
                                               <FileText className="h-3.5 w-3.5" />
@@ -305,7 +310,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
 
                                           {isQuiz && (
                                             <div className="mt-3 flex flex-col gap-2">
-                                              <button 
+                                              <button
                                                 onClick={(e) => toggleQuiz(e, lesson.id)}
                                                 className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-md border border-purple-100 w-max shadow-sm cursor-pointer transition-colors"
                                               >
@@ -315,7 +320,7 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                                 Interactive Quiz ({parsedMeta.questions?.length || 1} Questions)
                                                 {expandedQuizzes[lesson.id] ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
                                               </button>
-                                              
+
                                               {expandedQuizzes[lesson.id] && parsedMeta.questions && (
                                                 <div className="mt-2 mb-2 pl-4 border-l-2 border-purple-200 space-y-3">
                                                   {parsedMeta.questions.map((q: any, qIdx: number) => (
@@ -340,20 +345,22 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
                                     })()}
                                   </div>
                                 </div>
-                                <div className="hidden group-hover:flex items-center gap-1">
-                                  <button 
-                                    onClick={(e) => handleEditLesson(e, lesson, mod.id)}
-                                    className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md transition-colors"
-                                  >
-                                    <Edit2 className="h-3.5 w-3.5" />
-                                  </button>
-                                  <button 
-                                    onClick={(e) => handleDeleteLesson(e, lesson.id)}
-                                    className="p-1.5 text-gray-400 hover:text-red-600 rounded-md transition-colors"
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </button>
-                                </div>
+                                {isManager && (
+                                  <div className="hidden group-hover:flex items-center gap-1">
+                                    <button
+                                      onClick={(e) => handleEditLesson(e, lesson, mod.id)}
+                                      className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md transition-colors"
+                                    >
+                                      <Edit2 className="h-3.5 w-3.5" />
+                                    </button>
+                                    <button
+                                      onClick={(e) => handleDeleteLesson(e, lesson.id)}
+                                      className="p-1.5 text-gray-400 hover:text-red-600 rounded-md transition-colors"
+                                    >
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                )}
                               </li>
                             ))}
                           </ul>
@@ -368,8 +375,8 @@ export const CourseAccordionItem: React.FC<CourseAccordionItemProps> = ({
         </div>
       )}
 
-      {/* Embedded Modals for this specific Course */}
-      <ModuleEditModal 
+      {}
+      <ModuleEditModal
         courseId={course.id}
         module={editingModule}
         isOpen={isModuleModalOpen}

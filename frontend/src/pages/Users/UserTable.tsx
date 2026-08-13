@@ -53,8 +53,8 @@ export const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onToggleLoc
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex gap-2">
                   {user.roles && user.roles.map((role) => (
-                    <Badge 
-                      key={role} 
+                    <Badge
+                      key={role}
                       variant={role === 'Admin' ? 'danger' : role === 'Manager' ? 'info' : 'default'}
                     >
                       <Shield className="h-3 w-3 mr-1" />

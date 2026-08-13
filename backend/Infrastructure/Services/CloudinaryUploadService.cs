@@ -29,7 +29,7 @@ public class CloudinaryUploadService : IUploadService
             throw new ArgumentException("File is empty.");
 
         contentType = contentType.ToLower();
-        
+
         if (contentType.StartsWith("video/"))
         {
             var uploadParams = new VideoUploadParams()

@@ -56,7 +56,7 @@ const DepartmentManagementPage: React.FC = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Departments</h2>
-        <button 
+        <button
           onClick={openCreateModal}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center"
         >
@@ -85,9 +85,9 @@ const DepartmentManagementPage: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{dept.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">{dept.description || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button 
+                    <button
                       onClick={() => openEditModal(dept)}
-                      className="text-blue-600 hover:text-blue-900 flex items-center justify-end w-full" 
+                      className="text-blue-600 hover:text-blue-900 flex items-center justify-end w-full"
                       title="Edit"
                     >
                       <Edit2 className="h-4 w-4" />

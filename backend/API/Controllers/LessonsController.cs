@@ -8,7 +8,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin,Manager")]
+[Authorize(Roles = "Manager")]
 public class LessonsController : ControllerBase
 {
     private readonly ICourseService _courseService;
