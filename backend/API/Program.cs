@@ -58,6 +58,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<ISyncLogRepository, SyncLogRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ISystemSettingRepository, SystemSettingRepository>();
 
 builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -67,6 +68,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ISyncLogService, SyncLogService>();
 builder.Services.AddScoped<IUploadService, Infrastructure.Services.CloudinaryUploadService>();
+builder.Services.AddScoped<ISystemSettingService, SystemSettingService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForJWTTokenGeneration123!@#";
 var key = Encoding.UTF8.GetBytes(jwtKey);

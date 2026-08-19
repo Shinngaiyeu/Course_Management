@@ -10,6 +10,7 @@ import CourseDetailsPage from './pages/Courses/CourseDetailsPage';
 import { LearnerLayout } from './layouts/LearnerLayout';
 import LearnerHomePage from './pages/Learner/LearnerHomePage';
 import LearnerCourseDetailsPage from './pages/Learner/LearnerCourseDetailsPage';
+import Settings from './pages/Settings/Settings';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="courses" element={<CourseManagementPage />} />
             <Route path="courses/:id" element={<CourseDetailsPage />} />
             <Route path="sync-logs" element={<SyncLogPage />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
 
           {}

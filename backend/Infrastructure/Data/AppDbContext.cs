@@ -17,10 +17,18 @@ public class AppDbContext : DbContext
     public DbSet<Course> Courses { get; set; } = null!;
     public DbSet<CourseModule> CourseModules { get; set; } = null!;
     public DbSet<Lesson> Lessons { get; set; } = null!;
+    public DbSet<SystemSetting> SystemSettings { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<SystemSetting>()
+            .HasKey(s => s.Key);
+
+        modelBuilder.Entity<SystemSetting>().HasData(
+            new SystemSetting { Key = "WebhookPath", Value = "hris-webhook" }
+        );
 
         modelBuilder.Entity<UserRole>()
             .HasKey(ur => new { ur.UserId, ur.RoleId });
