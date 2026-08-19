@@ -11,13 +11,6 @@ export const LearnerCourseDetailsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Record<number, boolean>>({});
   const [activeLessonVideo, setActiveLessonVideo] = useState<number | null>(null);
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
-
-  useEffect(() => {
-    setQuizAnswers({});
-    setQuizSubmitted(false);
-  }, [activeLessonVideo]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -159,66 +152,20 @@ export const LearnerCourseDetailsPage: React.FC = () => {
                                     );
                                   } else if (meta.type === 'quiz' && meta.questions) {
                                     return (
-                                      <div className="mt-6 space-y-6 max-w-3xl">
-                                        <h3 className="text-lg font-bold text-gray-900 border-b pb-2">Knowledge Check Quiz</h3>
-                                        {meta.questions.map((q: any, qIdx: number) => (
-                                          <div key={qIdx} className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-                                            <p className="font-medium text-gray-900 mb-4">{qIdx + 1}. {q.question}</p>
-                                            <div className="space-y-2">
-                                              {q.options.map((opt: string, optIdx: number) => {
-                                                const isSelected = quizAnswers[qIdx] === optIdx;
-                                                const isCorrect = q.correctAnswer === optIdx;
-                                                const showResult = quizSubmitted;
-                                                
-                                                let bgClass = "bg-gray-50 border-gray-200 hover:bg-gray-100";
-                                                if (showResult) {
-                                                  if (isCorrect) bgClass = "bg-green-50 border-green-300 text-green-900";
-                                                  else if (isSelected && !isCorrect) bgClass = "bg-red-50 border-red-300 text-red-900";
-                                                  else bgClass = "bg-gray-50 border-gray-200 opacity-50";
-                                                } else if (isSelected) {
-                                                  bgClass = "bg-blue-50 border-blue-300 text-blue-900";
-                                                }
-
-                                                return (
-                                                  <label key={optIdx} className={`flex items-center p-3 border rounded-md cursor-pointer transition-colors ${bgClass}`}>
-                                                    <input 
-                                                      type="radio" 
-                                                      name={`quiz-${lesson.id}-q${qIdx}`}
-                                                      checked={isSelected}
-                                                      onChange={() => !quizSubmitted && setQuizAnswers(prev => ({...prev, [qIdx]: optIdx}))}
-                                                      disabled={quizSubmitted}
-                                                      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mr-3"
-                                                    />
-                                                    <span className="text-sm">{opt}</span>
-                                                    {showResult && isCorrect && <CheckCircle className="h-4 w-4 text-green-600 ml-auto" />}
-                                                  </label>
-                                                );
-                                              })}
-                                            </div>
+                                      <div className="mt-4 p-4 border border-blue-200 bg-blue-50 rounded-lg max-w-2xl flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                          <CheckCircle className="h-8 w-8 text-blue-500" />
+                                          <div>
+                                            <h4 className="font-semibold text-blue-900">Knowledge Check Quiz</h4>
+                                            <p className="text-xs text-blue-700">Click to start the interactive quiz for this lesson.</p>
                                           </div>
-                                        ))}
-                                        
-                                        {!quizSubmitted ? (
-                                          <button 
-                                            onClick={() => setQuizSubmitted(true)}
-                                            disabled={Object.keys(quizAnswers).length < meta.questions.length}
-                                            className="px-6 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                          >
-                                            Submit Answers
-                                          </button>
-                                        ) : (
-                                          <div className="flex items-center gap-4">
-                                            <button 
-                                              onClick={() => { setQuizSubmitted(false); setQuizAnswers({}); }}
-                                              className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md font-medium hover:bg-gray-300 transition-colors"
-                                            >
-                                              Retake Quiz
-                                            </button>
-                                            <span className="text-sm font-medium text-gray-700">
-                                              Score: {meta.questions.filter((q: any, i: number) => quizAnswers[i] === q.correctAnswer).length} / {meta.questions.length}
-                                            </span>
-                                          </div>
-                                        )}
+                                        </div>
+                                        <button 
+                                          onClick={() => navigate(`/learner/course/${course.id}/quiz/${lesson.id}`)} 
+                                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors"
+                                        >
+                                          Take Quiz
+                                        </button>
                                       </div>
                                     );
                                   }
