@@ -26,11 +26,11 @@ public class SyncController : ControllerBase
             return NotFound();
         }
 
-        var result = await _syncService.SyncUserAsync(payload);
-        if (result)
+        var (success, message) = await _syncService.SyncUserAsync(payload);
+        if (success)
         {
             return Ok(new { message = "Sync successful" });
         }
-        return BadRequest(new { message = "Sync failed" });
+        return BadRequest(new { message = message });
     }
 }

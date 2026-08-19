@@ -25,7 +25,7 @@ public class SyncService : ISyncService
         _syncLogRepository = syncLogRepository;
     }
 
-    public async Task<bool> SyncUserAsync(SyncPayload payload)
+    public async Task<(bool Success, string Message)> SyncUserAsync(SyncPayload payload)
     {
         var log = new SyncLog
         {
@@ -87,6 +87,6 @@ public class SyncService : ISyncService
 
         await _syncLogRepository.AddAsync(log);
 
-        return log.Status == "Success";
+        return (log.Status == "Success", log.Message);
     }
 }

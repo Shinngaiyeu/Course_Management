@@ -4,5 +4,5 @@ namespace Application.Interfaces;
 
 public interface ISyncService
 {
-    Task<bool> SyncUserAsync(SyncPayload payload);
+    Task<(bool Success, string Message)> SyncUserAsync(SyncPayload payload);
 }
