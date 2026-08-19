@@ -112,19 +112,19 @@ export const LearnerStudyPage: React.FC = () => {
       <div className={`flex-shrink-0 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ${sidebarOpen ? 'w-80' : 'w-0 hidden md:flex md:w-16 md:items-center'}`}>
         
         {/* Sidebar Header */}
-        <div className="h-16 border-b border-gray-200 flex items-center justify-between px-4 bg-gray-900 text-white shrink-0">
+        <div className="h-16 border-b border-gray-200 flex items-center justify-between px-4 bg-white text-gray-900 shrink-0 shadow-sm">
           {sidebarOpen ? (
-            <Link to={`/learner/course/${course.id}`} className="flex items-center text-sm font-medium hover:text-gray-300 transition-colors truncate">
+            <Link to={`/learner/course/${course.id}`} className="flex items-center text-sm font-bold hover:text-blue-600 transition-colors truncate">
               <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
               <span className="truncate">{course.title}</span>
             </Link>
           ) : (
-            <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-gray-800 rounded text-gray-300">
+            <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-gray-100 rounded text-gray-600 transition-colors">
               <List className="h-5 w-5" />
             </button>
           )}
           {sidebarOpen && (
-            <button onClick={() => setSidebarOpen(false)} className="md:hidden p-1 text-gray-400 hover:text-white">
+            <button onClick={() => setSidebarOpen(false)} className="md:hidden p-1 text-gray-400 hover:text-gray-600 transition-colors">
               <ChevronDown className="h-5 w-5 transform rotate-90" />
             </button>
           )}
