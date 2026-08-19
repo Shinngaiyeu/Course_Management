@@ -80,25 +80,17 @@ public class UserService : IUserService
         if (dto.DepartmentId.HasValue) user.DepartmentId = dto.DepartmentId.Value;
         if (dto.IsActive.HasValue) user.IsActive = dto.IsActive.Value;
 
-        if (dto.RoleIds != null)
-        {
-            var toRemove = user.UserRoles.Where(ur => !dto.RoleIds.Contains(ur.RoleId)).ToList();
-            foreach (var ur in toRemove)
-            {
-                user.UserRoles.Remove(ur);
-            }
-
-            var toAdd = dto.RoleIds.Where(rId => !user.UserRoles.Any(ur => ur.RoleId == rId)).ToList();
-            foreach (var rId in toAdd)
-            {
-                user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = rId });
-            }
-        }
-
         user.UpdatedAt = DateTime.UtcNow;
         await _repository.UpdateAsync(user);
 
-        return MapToDto(user);
+        if (dto.RoleIds != null)
+        {
+            await _repository.UpdateUserRolesAsync(user.Id, dto.RoleIds);
+            
+            user = await _repository.GetByIdAsync(user.Id);
+        }
+
+        return MapToDto(user!);
     }
 
     public async Task<bool> DeleteUserAsync(Guid id)
