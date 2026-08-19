@@ -52,7 +52,7 @@ public class UserService : IUserService
             Id = Guid.NewGuid(),
             Username = dto.Username,
             Email = dto.Email,
-            PasswordHash = dto.Password,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             DepartmentId = dto.DepartmentId,
             IsActive = true
         };

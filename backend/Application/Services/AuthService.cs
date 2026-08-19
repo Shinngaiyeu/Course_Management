@@ -23,7 +23,23 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.GetByEmailAsync(email);
 
-        if (user == null || user.PasswordHash != password)
+        if (user == null)
+        {
+            return null;
+        }
+
+        bool isPasswordValid = false;
+        if (user.PasswordHash.StartsWith("$2a$") || user.PasswordHash.StartsWith("$2b$") || user.PasswordHash.StartsWith("$2y$"))
+        {
+            isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        }
+        else
+        {
+            // Fallback for existing plaintext passwords during demo
+            isPasswordValid = (user.PasswordHash == password);
+        }
+
+        if (!isPasswordValid)
         {
             return null;
         }
