@@ -8,6 +8,7 @@ export const LearnerCourseDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
