@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getWebhookPath, updateWebhookPath } from '../../services/settingsService';
 import { API_BASE_URL } from '../../services/api';
 import toast from 'react-hot-toast';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Settings as SettingsIcon } from 'lucide-react';
 
 const Settings: React.FC = () => {
   const [webhookPath, setWebhookPath] = useState('');
@@ -49,11 +49,21 @@ const Settings: React.FC = () => {
   const fullUrl = `${API_BASE_URL}/Sync/${webhookPath || 'hris-webhook'}`;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">System Settings</h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex items-center">
+            <SettingsIcon className="mr-3 h-8 w-8 text-blue-600" />
+            System Settings
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Configure global application settings and integrations.
+          </p>
+        </div>
+      </div>
       
-      <div className="mb-6 border-b pb-6">
-        <h3 className="text-lg font-medium text-gray-700 mb-2">Webhook Configuration</h3>
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h3 className="text-lg font-medium text-gray-900 mb-1">Webhook Configuration</h3>
         <p className="text-sm text-gray-500 mb-4">
           Configure the endpoint path where the HRIS system will send data.
         </p>

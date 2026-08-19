@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SyncLog, syncLogService } from '../../services/syncLogService';
-import { Eye, RefreshCw, X, Filter } from 'lucide-react';
+import { Eye, RefreshCw, X, Filter, Activity } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const SyncLogPage: React.FC = () => {
@@ -52,10 +52,15 @@ const SyncLogPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <div className="mb-6 flex justify-between items-end">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">HRIS Sync Logs</h2>
-          <p className="text-gray-500 text-sm mt-1">History of user synchronizations from HRIS</p>
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex items-center">
+            <Activity className="mr-3 h-8 w-8 text-blue-600" />
+            HRIS Sync Logs
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            History of user synchronizations from HRIS.
+          </p>
         </div>
 
         {}

@@ -23,12 +23,6 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({ isOpen, onClos
   const [departmentId, setDepartmentId] = useState<number | ''>('');
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
-  const toggleRole = (roleId: number) => {
-    setSelectedRoles(prev =>
-      prev.includes(roleId) ? prev.filter(id => id !== roleId) : [...prev, roleId]
-    );
-  };
-
   const handleSave = () => {
     onSave({
       username,
@@ -90,20 +84,17 @@ export const UserCreateModal: React.FC<UserCreateModalProps> = ({ isOpen, onClos
         </div>
 
         <div>
-          <h4 className="text-sm font-medium text-gray-900 mb-2">Roles</h4>
-          <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <select
+            value={selectedRoles.length > 0 ? String(selectedRoles[0]) : ''}
+            onChange={(e) => setSelectedRoles(e.target.value ? [Number(e.target.value)] : [])}
+            className="block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Select a role</option>
             {availableRoles.map(role => (
-              <label key={role.id} className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  checked={selectedRoles.includes(role.id)}
-                  onChange={() => toggleRole(role.id)}
-                />
-                <span className="ml-3 text-sm text-gray-700">{role.name}</span>
-              </label>
+              <option key={role.id} value={String(role.id)}>{role.name}</option>
             ))}
-          </div>
+          </select>
         </div>
 
         <div className="pt-4 flex justify-end gap-3 border-t border-gray-200">

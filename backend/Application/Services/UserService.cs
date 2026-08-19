@@ -80,6 +80,21 @@ public class UserService : IUserService
         if (dto.DepartmentId.HasValue) user.DepartmentId = dto.DepartmentId.Value;
         if (dto.IsActive.HasValue) user.IsActive = dto.IsActive.Value;
 
+        if (dto.RoleIds != null)
+        {
+            var toRemove = user.UserRoles.Where(ur => !dto.RoleIds.Contains(ur.RoleId)).ToList();
+            foreach (var ur in toRemove)
+            {
+                user.UserRoles.Remove(ur);
+            }
+
+            var toAdd = dto.RoleIds.Where(rId => !user.UserRoles.Any(ur => ur.RoleId == rId)).ToList();
+            foreach (var rId in toAdd)
+            {
+                user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = rId });
+            }
+        }
+
         user.UpdatedAt = DateTime.UtcNow;
         await _repository.UpdateAsync(user);
 
@@ -136,7 +151,7 @@ public class UserService : IUserService
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt,
             Department = user.Department != null ? new DepartmentDto { Id = user.Department.Id, Name = user.Department.Name } : null,
-            Roles = user.UserRoles.Select(ur => new RoleDto { Id = ur.Role.Id, Name = ur.Role.Name }).ToList()
+            Roles = user.UserRoles?.Select(ur => new RoleDto { Id = ur.Role.Id, Name = ur.Role.Name }).ToList() ?? new List<RoleDto>()
         };
     }
 }
