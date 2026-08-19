@@ -9,15 +9,23 @@ namespace API.Controllers;
 public class SyncController : ControllerBase
 {
     private readonly ISyncService _syncService;
+    private readonly ISystemSettingService _settingService;
 
-    public SyncController(ISyncService syncService)
+    public SyncController(ISyncService syncService, ISystemSettingService settingService)
     {
         _syncService = syncService;
+        _settingService = settingService;
     }
 
-    [HttpPost("hris-webhook")]
-    public async Task<IActionResult> SyncUser([FromBody] SyncPayload payload)
+    [HttpPost("{path}")]
+    public async Task<IActionResult> SyncUser(string path, [FromBody] SyncPayload payload)
     {
+        var configuredPath = await _settingService.GetWebhookPathAsync();
+        if (path != configuredPath)
+        {
+            return NotFound();
+        }
+
         var result = await _syncService.SyncUserAsync(payload);
         if (result)
         {

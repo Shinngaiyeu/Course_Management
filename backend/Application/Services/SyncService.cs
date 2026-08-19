@@ -38,8 +38,7 @@ public class SyncService : ISyncService
             var department = await _departmentRepository.GetByNameAsync(payload.DepartmentName);
             if (department == null)
             {
-                department = new Department { Name = payload.DepartmentName };
-                await _departmentRepository.AddAsync(department);
+                throw new Exception($"Department {payload.DepartmentName} does not exist.");
             }
 
             var role = await _roleRepository.GetByNameAsync(payload.Role);

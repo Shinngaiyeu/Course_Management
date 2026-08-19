@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Users, LayoutDashboard, Settings, BookOpen } from 'lucide-react';
+import { Users, LayoutDashboard, Settings, BookOpen, Activity } from 'lucide-react';
 import { authService } from '../services/authService';
 
 export const Sidebar: React.FC = () => {
@@ -13,7 +13,8 @@ export const Sidebar: React.FC = () => {
     navItems = [
       { name: 'User Management', path: '/users', icon: Users },
       { name: 'Departments', path: '/departments', icon: LayoutDashboard },
-      { name: 'Sync Logs', path: '/sync-logs', icon: Settings },
+      { name: 'Sync Logs', path: '/sync-logs', icon: Activity },
+      { name: 'Settings', path: '/settings', icon: Settings },
     ];
   } else if (roles.includes('Manager')) {
     navItems = [
