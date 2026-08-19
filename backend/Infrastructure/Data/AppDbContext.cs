@@ -73,5 +73,36 @@ public class AppDbContext : DbContext
             .WithMany(cm => cm.Lessons)
             .HasForeignKey(l => l.CourseModuleId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Seed Data for Demo
+        var adminGuid = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var hrManagerGuid = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        var itLearnerGuid = Guid.Parse("33333333-3333-3333-3333-333333333333");
+        var salesLearnerGuid = Guid.Parse("44444444-4444-4444-4444-444444444444");
+        var financeManagerGuid = Guid.Parse("55555555-5555-5555-5555-555555555555");
+        
+        var baseDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        modelBuilder.Entity<User>().HasData(
+            new User { Id = adminGuid, Username = "admin", Email = "admin@company.com", PasswordHash = "password123", DepartmentId = 1, IsActive = true, CreatedAt = baseDate, UpdatedAt = baseDate },
+            new User { Id = hrManagerGuid, Username = "hrmanager", Email = "hrmanager@company.com", PasswordHash = "password123", DepartmentId = 2, IsActive = true, CreatedAt = baseDate, UpdatedAt = baseDate },
+            new User { Id = itLearnerGuid, Username = "itlearner", Email = "itlearner@company.com", PasswordHash = "password123", DepartmentId = 1, IsActive = true, CreatedAt = baseDate, UpdatedAt = baseDate },
+            new User { Id = salesLearnerGuid, Username = "saleslearner", Email = "saleslearner@company.com", PasswordHash = "password123", DepartmentId = 4, IsActive = true, CreatedAt = baseDate, UpdatedAt = baseDate },
+            new User { Id = financeManagerGuid, Username = "financemanager", Email = "financemanager@company.com", PasswordHash = "password123", DepartmentId = 3, IsActive = true, CreatedAt = baseDate, UpdatedAt = baseDate }
+        );
+
+        modelBuilder.Entity<UserRole>().HasData(
+            new UserRole { UserId = adminGuid, RoleId = 1 }, // Admin
+            new UserRole { UserId = hrManagerGuid, RoleId = 2 }, // Manager
+            new UserRole { UserId = itLearnerGuid, RoleId = 3 }, // Learner
+            new UserRole { UserId = salesLearnerGuid, RoleId = 3 }, // Learner
+            new UserRole { UserId = financeManagerGuid, RoleId = 2 } // Manager
+        );
+
+        modelBuilder.Entity<Course>().HasData(
+            new Course { Id = 101, Title = "Information Security Basics", Description = "Learn the fundamentals of IT security in the workplace.", DepartmentId = 1, InstructorId = adminGuid, Status = Domain.Enums.CourseStatus.Published, CreatedAt = baseDate },
+            new Course { Id = 102, Title = "Sales Onboarding 101", Description = "Everything you need to know to start selling effectively.", DepartmentId = 4, InstructorId = hrManagerGuid, Status = Domain.Enums.CourseStatus.Published, CreatedAt = baseDate },
+            new Course { Id = 103, Title = "Financial Compliance", Description = "Required training for handling financial records.", DepartmentId = 3, InstructorId = financeManagerGuid, Status = Domain.Enums.CourseStatus.Draft, CreatedAt = baseDate }
+        );
     }
 }
