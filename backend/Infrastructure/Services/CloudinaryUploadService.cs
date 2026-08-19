@@ -42,6 +42,18 @@ public class CloudinaryUploadService : IUploadService
                 throw new Exception(uploadResult.Error.Message);
             return uploadResult.SecureUrl.ToString();
         }
+        else if (contentType == "application/pdf" || fileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+        {
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(fileName, fileStream),
+                Folder = folderName
+            };
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            if (uploadResult.Error != null)
+                throw new Exception(uploadResult.Error.Message);
+            return uploadResult.SecureUrl.ToString();
+        }
         else
         {
             var uploadParams = new RawUploadParams()
