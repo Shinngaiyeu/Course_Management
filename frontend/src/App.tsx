@@ -10,7 +10,7 @@ import CourseDetailsPage from './pages/Courses/CourseDetailsPage';
 import { LearnerLayout } from './layouts/LearnerLayout';
 import LearnerHomePage from './pages/Learner/LearnerHomePage';
 import LearnerCourseDetailsPage from './pages/Learner/LearnerCourseDetailsPage';
-import LearnerQuizPage from './pages/Learner/LearnerQuizPage';
+import LearnerStudyPage from './pages/Learner/LearnerStudyPage';
 import Settings from './pages/Settings/Settings';
 import { Toaster } from 'react-hot-toast';
 
@@ -36,7 +36,7 @@ function App() {
           <Route path="/learner" element={<LearnerLayout />}>
             <Route index element={<LearnerHomePage />} />
             <Route path="course/:id" element={<LearnerCourseDetailsPage />} />
-            <Route path="course/:courseId/quiz/:lessonId" element={<LearnerQuizPage />} />
+            <Route path="course/:courseId/study/:lessonId?" element={<LearnerStudyPage />} />
           </Route>
         </Route>
       </Routes>
