@@ -98,4 +98,18 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.AnyAsync(u => u.Username == username);
     }
+
+    public async Task UpdateUserRolesAsync(Guid userId, List<int> roleIds)
+    {
+        var existingRoles = await _context.UserRoles.Where(ur => ur.UserId == userId).ToListAsync();
+        _context.UserRoles.RemoveRange(existingRoles);
+        
+        if (roleIds != null && roleIds.Any())
+        {
+            var newRoles = roleIds.Select(rId => new UserRole { UserId = userId, RoleId = rId });
+            await _context.UserRoles.AddRangeAsync(newRoles);
+        }
+        
+        await _context.SaveChangesAsync();
+    }
 }
