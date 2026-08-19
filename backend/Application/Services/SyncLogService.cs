@@ -52,7 +52,8 @@ public class SyncLogService : ISyncLogService
             var payload = JsonSerializer.Deserialize<SyncPayload>(log.Payload);
             if (payload == null) return false;
 
-            return await _syncService.SyncUserAsync(payload);
+            var (success, _) = await _syncService.SyncUserAsync(payload);
+            return success;
         }
         catch
         {
