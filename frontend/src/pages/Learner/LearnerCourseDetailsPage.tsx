@@ -10,14 +10,6 @@ export const LearnerCourseDetailsPage: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Record<number, boolean>>({});
-  const [activeLessonVideo, setActiveLessonVideo] = useState<number | null>(null);
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
-
-  useEffect(() => {
-    setQuizAnswers({});
-    setQuizSubmitted(false);
-  }, [activeLessonVideo]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -45,10 +37,6 @@ export const LearnerCourseDetailsPage: React.FC = () => {
       ...prev,
       [moduleId]: !prev[moduleId]
     }));
-  };
-
-  const toggleLessonVideo = (lessonId: number) => {
-    setActiveLessonVideo(activeLessonVideo === lessonId ? null : lessonId);
   };
 
   if (loading) {
@@ -104,131 +92,27 @@ export const LearnerCourseDetailsPage: React.FC = () => {
                   {isExpanded && (
                     <div className="bg-white">
                       {mod.lessons?.map((lesson, lIndex) => {
-                        const isActive = activeLessonVideo === lesson.id;
                         return (
-                        <div key={lesson.id} className="flex flex-col border-t border-gray-100 first:border-t-0">
-                          <div
-                            className={`p-4 pl-12 flex items-start justify-between cursor-pointer hover:bg-gray-50 group transition-colors ${isActive ? 'bg-blue-50/50' : ''}`}
-                            onClick={() => toggleLessonVideo(lesson.id)}
+                          <div 
+                            key={lesson.id} 
+                            onClick={() => navigate(`/learner/course/${course.id}/study/${lesson.id}`)}
+                            className="flex flex-col border-t border-gray-100 first:border-t-0 hover:bg-gray-50 cursor-pointer transition-colors group"
                           >
-                            <div className="flex gap-3">
-                              {lesson.videoUrl ? <PlayCircle className={`h-4 w-4 mt-0.5 ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-blue-500'}`} /> : <FileText className="h-4 w-4 mt-0.5 text-gray-400" />}
-                              <div>
-                                <span className={`text-sm font-medium transition-colors underline-offset-2 hover:underline ${isActive ? 'text-blue-600' : 'text-gray-700 group-hover:text-blue-600'}`}>
-                                  {lIndex + 1}. {lesson.title}
-                                </span>
-                                {lesson.metadata && <span className="block mt-1 text-xs text-gray-400 font-mono">Includes resources</span>}
+                            <div className="p-4 pl-12 flex items-start justify-between">
+                              <div className="flex gap-3">
+                                {lesson.videoUrl ? <PlayCircle className="h-4 w-4 mt-0.5 text-gray-400 group-hover:text-blue-500" /> : <FileText className="h-4 w-4 mt-0.5 text-gray-400 group-hover:text-blue-500" />}
+                                <div>
+                                  <span className="text-sm font-medium transition-colors underline-offset-2 group-hover:underline text-gray-700 group-hover:text-blue-600">
+                                    {lIndex + 1}. {lesson.title}
+                                  </span>
+                                  {lesson.metadata && <span className="block mt-1 text-xs text-gray-400 font-mono">Includes resources</span>}
+                                </div>
                               </div>
+                              <Lock className="h-4 w-4 text-gray-300 hidden" />
                             </div>
-                            <Lock className="h-4 w-4 text-gray-300 hidden" />
                           </div>
-
-                          {}
-                          {isActive && (
-                            <div className="px-12 py-4 bg-gray-50 border-t border-gray-100">
-                              {lesson.videoUrl && (
-                                <div className="mt-4 rounded-md overflow-hidden bg-black aspect-video w-full shadow-md max-w-3xl mb-4">
-                                  <video src={lesson.videoUrl} controls autoPlay className="w-full h-full object-contain" />
-                                </div>
-                              )}
-                              
-                              {lesson.content && (
-                                <div className="text-sm text-gray-700 whitespace-pre-wrap mb-4">
-                                  {lesson.content}
-                                </div>
-                              )}
-
-                              {(() => {
-                                if (!lesson.metadata) return null;
-                                try {
-                                  const meta = JSON.parse(lesson.metadata);
-                                  if (meta.type === 'document' && meta.url) {
-                                    return (
-                                      <div className="mt-4 p-4 border border-orange-200 bg-orange-50 rounded-lg max-w-2xl flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                          <FileText className="h-8 w-8 text-orange-500" />
-                                          <div>
-                                            <h4 className="font-semibold text-orange-900">Document Resource</h4>
-                                            <p className="text-xs text-orange-700">Click to view or download this document.</p>
-                                          </div>
-                                        </div>
-                                        <a href={meta.url} target="_blank" rel="noreferrer" className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-md transition-colors">
-                                          Open Document
-                                        </a>
-                                      </div>
-                                    );
-                                  } else if (meta.type === 'quiz' && meta.questions) {
-                                    return (
-                                      <div className="mt-6 space-y-6 max-w-3xl">
-                                        <h3 className="text-lg font-bold text-gray-900 border-b pb-2">Knowledge Check Quiz</h3>
-                                        {meta.questions.map((q: any, qIdx: number) => (
-                                          <div key={qIdx} className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-                                            <p className="font-medium text-gray-900 mb-4">{qIdx + 1}. {q.question}</p>
-                                            <div className="space-y-2">
-                                              {q.options.map((opt: string, optIdx: number) => {
-                                                const isSelected = quizAnswers[qIdx] === optIdx;
-                                                const isCorrect = q.correctAnswer === optIdx;
-                                                const showResult = quizSubmitted;
-                                                
-                                                let bgClass = "bg-gray-50 border-gray-200 hover:bg-gray-100";
-                                                if (showResult) {
-                                                  if (isCorrect) bgClass = "bg-green-50 border-green-300 text-green-900";
-                                                  else if (isSelected && !isCorrect) bgClass = "bg-red-50 border-red-300 text-red-900";
-                                                  else bgClass = "bg-gray-50 border-gray-200 opacity-50";
-                                                } else if (isSelected) {
-                                                  bgClass = "bg-blue-50 border-blue-300 text-blue-900";
-                                                }
-
-                                                return (
-                                                  <label key={optIdx} className={`flex items-center p-3 border rounded-md cursor-pointer transition-colors ${bgClass}`}>
-                                                    <input 
-                                                      type="radio" 
-                                                      name={`quiz-${lesson.id}-q${qIdx}`}
-                                                      checked={isSelected}
-                                                      onChange={() => !quizSubmitted && setQuizAnswers(prev => ({...prev, [qIdx]: optIdx}))}
-                                                      disabled={quizSubmitted}
-                                                      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mr-3"
-                                                    />
-                                                    <span className="text-sm">{opt}</span>
-                                                    {showResult && isCorrect && <CheckCircle className="h-4 w-4 text-green-600 ml-auto" />}
-                                                  </label>
-                                                );
-                                              })}
-                                            </div>
-                                          </div>
-                                        ))}
-                                        
-                                        {!quizSubmitted ? (
-                                          <button 
-                                            onClick={() => setQuizSubmitted(true)}
-                                            disabled={Object.keys(quizAnswers).length < meta.questions.length}
-                                            className="px-6 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                          >
-                                            Submit Answers
-                                          </button>
-                                        ) : (
-                                          <div className="flex items-center gap-4">
-                                            <button 
-                                              onClick={() => { setQuizSubmitted(false); setQuizAnswers({}); }}
-                                              className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md font-medium hover:bg-gray-300 transition-colors"
-                                            >
-                                              Retake Quiz
-                                            </button>
-                                            <span className="text-sm font-medium text-gray-700">
-                                              Score: {meta.questions.filter((q: any, i: number) => quizAnswers[i] === q.correctAnswer).length} / {meta.questions.length}
-                                            </span>
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  }
-                                } catch(e) {}
-                                return null;
-                              })()}
-                            </div>
-                          )}
-                        </div>
-                      )})}
+                        );
+                      })}
                       {(!mod.lessons || mod.lessons.length === 0) && (
                         <div className="p-4 pl-12 text-sm text-gray-400 italic border-t border-gray-100">
                           No lessons in this module yet.

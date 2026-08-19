@@ -37,10 +37,10 @@ export const ModuleEditModal: React.FC<ModuleEditModalProps> = ({ courseId, modu
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={module ? 'Edit Section' : 'Add New Section'}>
+    <Modal isOpen={isOpen} onClose={onClose} title={module ? 'Edit Module' : 'Add New Module'}>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Module Title</label>
           <input
             type="text"
             value={title}
@@ -69,7 +69,7 @@ export const ModuleEditModal: React.FC<ModuleEditModalProps> = ({ courseId, modu
         </div>
         <div className="pt-4 flex justify-end gap-3 border-t border-gray-200">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSave} disabled={!title}>Save Section</Button>
+          <Button onClick={handleSave} disabled={!title}>Save Module</Button>
         </div>
       </div>
     </Modal>
