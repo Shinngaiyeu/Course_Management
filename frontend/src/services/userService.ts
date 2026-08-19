@@ -19,6 +19,7 @@ export interface User {
   departmentId?: number;
   department?: string;
   roles: string[];
+  roleIds?: number[];
   status: 'Active' | 'Locked';
 }
 
@@ -51,6 +52,7 @@ export const userService = {
         departmentId: u.departmentId,
         department: u.department?.name,
         roles: u.roles?.map((r: any) => r.name) || [],
+        roleIds: u.roles?.map((r: any) => r.id) || [],
         status: u.isActive ? 'Active' : 'Locked'
       }))
     };
@@ -62,7 +64,8 @@ export const userService = {
       username: user.username,
       email: user.email,
       departmentId: user.departmentId,
-      isActive: user.status === 'Active'
+      isActive: user.status === 'Active',
+      roleIds: user.roleIds
     };
     await api.patch(`/users/${user.id}`, payload);
     return user;
@@ -76,6 +79,7 @@ export const userService = {
       departmentId: data.departmentId,
       department: data.department?.name,
       roles: data.roles?.map((r: any) => r.name) || [],
+      roleIds: data.roles?.map((r: any) => r.id) || [],
       status: data.isActive ? 'Active' : 'Locked'
     };
   }

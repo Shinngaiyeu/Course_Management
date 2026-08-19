@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Department, departmentService } from '../../services/departmentService';
-import { Edit2, Plus } from 'lucide-react';
+import { Edit2, Plus, LayoutDashboard } from 'lucide-react';
 import { DepartmentEditModal } from './DepartmentEditModal';
 import toast from 'react-hot-toast';
 
@@ -54,8 +54,16 @@ const DepartmentManagementPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Departments</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex items-center">
+            <LayoutDashboard className="mr-3 h-8 w-8 text-blue-600" />
+            Departments
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Manage your organization's departments and their descriptions.
+          </p>
+        </div>
         <button
           onClick={openCreateModal}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center"

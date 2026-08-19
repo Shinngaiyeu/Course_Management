@@ -12,22 +12,20 @@ interface UserEditModalProps {
   onSave: (user: User) => void;
 }
 
-const availableRoles = ['Admin', 'Manager', 'Learner'];
+const availableRoles = [
+  { id: 1, name: 'Admin' },
+  { id: 2, name: 'Manager' },
+  { id: 3, name: 'Learner' }
+];
 
 export const UserEditModal: React.FC<UserEditModalProps> = ({ user, departments, isOpen, onClose, onSave }) => {
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(user.roles || []);
+  const [selectedRoles, setSelectedRoles] = useState<number[]>(user.roleIds || []);
   const [departmentId, setDepartmentId] = useState<number | undefined>(user.departmentId);
-
-  const toggleRole = (role: string) => {
-    setSelectedRoles(prev =>
-      prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
-    );
-  };
 
   const handleSave = () => {
     onSave({
       ...user,
-      roles: selectedRoles,
+      roleIds: selectedRoles,
       departmentId
     });
   };
@@ -50,20 +48,17 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({ user, departments,
         </div>
 
         <div>
-          <h4 className="text-sm font-medium text-gray-900 mb-3">Roles</h4>
-          <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <select
+            value={selectedRoles.length > 0 ? String(selectedRoles[0]) : ''}
+            onChange={(e) => setSelectedRoles(e.target.value ? [Number(e.target.value)] : [])}
+            className="block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Select a role</option>
             {availableRoles.map(role => (
-              <label key={role} className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  checked={selectedRoles.includes(role)}
-                  onChange={() => toggleRole(role)}
-                />
-                <span className="ml-3 text-sm text-gray-700">{role}</span>
-              </label>
+              <option key={role.id} value={String(role.id)}>{role.name}</option>
             ))}
-          </div>
+          </select>
         </div>
 
         <div className="pt-4 flex justify-end gap-3 border-t border-gray-200">

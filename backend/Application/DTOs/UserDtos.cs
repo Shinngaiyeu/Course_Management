@@ -27,4 +27,5 @@ public class UpdateUserDto
     public string? Email { get; set; }
     public int? DepartmentId { get; set; }
     public bool? IsActive { get; set; }
+    public List<int>? RoleIds { get; set; }
 }
